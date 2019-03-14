@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h3>搜索页</h3>
+    <br>
+    <form method="post" action="/search" enctype="multipart/form-data">
+        <div >
+            {{ form.csrf_token }}
+            {{ form.file.label }}{{ form.file(class="search_input_file") }} {{ form.submit }}
+        </div>
+    </form>
+    {% if person %}
+        <div style="margin-top:15px;margin-bottom: 15px;"><h4>搜索结果</h4></div>
+        <div class="match-result">
+            <img src="data:image/png;base64,{{ base64.b64encode(image).decode('utf-8') }}" width="100px" height="100px">
+            <p>姓名：{{ person.name }}</p>
+            <p>证件号：{{ person.id_card }}</p>
+            <p>描述：{{ person.description }}</p>
+        </div>
+        <div>
+        </div>
+    {% endif %}
+    {% if match_result %}
+        <div style="margin-top:15px;margin-bottom: 15px;"><h4>搜索结果</h4></div>
+        <div class="match-result">
+        {{ match_result }}
+        </div>
+    {% endif %}
+
+{% endblock %}

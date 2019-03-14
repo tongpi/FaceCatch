@@ -16,7 +16,6 @@
             <th>姓名</th>
             <th>证件号</th>
             <th>描述</th>
-            <th>标签</th>
             <th>操作</th>
 
         </tr>
@@ -26,7 +25,6 @@
             <th><a href="{{ url_for('facecatch.staff.views.detail', person_id=person.id) }}">{{ person.name }}</a></th>
             <th>{{ person.id_card }}</th>
             <th>{{ person.description }}</th>
-            <th>{{ person.face_feature }}</th>
             <th>
                 <a href="{{ url_for("facecatch.staff.views.update_person", person_id=person.id) }}">编辑</a>
                 <a href="{{ url_for('facecatch.staff.views.delete_person', person_id=person.id) }}" onclick="if(confirm('确定要删除？')){return true;}else{return false;}">删除</a>

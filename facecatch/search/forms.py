@@ -8,4 +8,4 @@ class UploadForm(FlaskForm):
     上传需要比对的图片
     """
     file = FileField("上传图片", validators=[DataRequired()])
-    submit = SubmitField("分析")
+    submit = SubmitField("搜索")

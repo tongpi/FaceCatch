@@ -11,6 +11,7 @@ from facecatch.utils import get_feature
 blueprint = flask.Blueprint(__name__, __name__)
 
 
+@blueprint.route('/', methods=['GET', 'POST'])
 @blueprint.route('/upload', methods=['GET', 'POST'])
 def upload():
     """将上传的图片进行比对"""
@@ -22,12 +23,14 @@ def upload():
         upload_file = request.files['file'].read()
         face_feature, similarity = get_feature(upload_file)
 
-        person = PersonInfo.query.filter(PersonInfo.face_feature == face_feature).first()
-
-        if person and similarity > 60:
-            match_result = '它是： {face_feature}'.format(face_feature=person.face_feature)
+        if similarity > 70:
+            person = PersonInfo.query.filter(PersonInfo.face_feature == face_feature).first()
+            if person:
+                match_result = person
+            else:
+                match_result = '该人员信息未知。'
         else:
-            match_result = '不认识'
+            match_result = '该人员信息未知。'
 
     return render_template('search/upload.html',
                            form=upload_form,
