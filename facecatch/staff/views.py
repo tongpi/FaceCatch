@@ -4,7 +4,7 @@ import flask
 from flask import request, render_template, redirect, url_for, flash
 
 from app import db
-from facecatch.models import PersonInfo
+from facecatch.staff.models import PersonInfo
 from facecatch.staff.forms import AddForm, UpdateForm
 from facecatch.utils import get_feature
 

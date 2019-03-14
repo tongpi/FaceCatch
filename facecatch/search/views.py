@@ -3,7 +3,7 @@ import base64
 import flask
 from flask import request, render_template, redirect, url_for
 
-from facecatch.models import PersonInfo
+from facecatch.staff.models import PersonInfo
 from facecatch.search.forms import UploadForm
 from facecatch.utils import get_feature
 

@@ -1,5 +1,9 @@
+from functools import wraps
+
 import requests
 import json
+
+from flask import session, redirect, url_for, request
 
 import settings
 
@@ -25,3 +29,13 @@ def get_feature(image):
     return face_feature, similarity
 
 
+# 登录装饰器
+def login_required(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if session.get('username'):
+            return func(*args, **kwargs)
+        else:
+            return redirect(url_for('center.views.login', next=request.url))
+
+    return wrapper
