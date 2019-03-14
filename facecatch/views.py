@@ -8,11 +8,10 @@ from flask_cas import login_required
 blueprint = flask.Blueprint(__name__, __name__)
 
 
-@blueprint.route('/', methods=['GET', 'POST'])
 # @login_required
-def home():
-    # print(cas.username)
-    return render_template('base.html')
+# def home():
+#     # print(cas.username)
+#     return render_template('base.html')
 
 
 
