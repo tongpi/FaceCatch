@@ -1,0 +1,19 @@
+{% extends 'home.html' %}
+
+{% block content %}
+    <h3>修改信息</h3>
+    <br>
+
+    <form method="post" enctype="multipart/form-data" novalidate="novalidate">
+        {{ form.csrf_token }}
+        图片：<img src="data:image/png;base64,{{ base64.b64encode(person.image).decode('utf-8') }}" width="100px" height="100px">
+        <br>{{ form.file }}<br>
+        人员名称：{{ person.name }}
+        <br>{{ form.name }}<br>
+        证件号：{{ person.id_card }}
+        <br>{{ form.id_card }}<br>
+        描述：{{ person.description }}
+        <br>{{ form.description }}<br>
+        {{ form.submit }}
+    </form>
+{% endblock %}

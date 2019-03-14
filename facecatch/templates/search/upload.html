@@ -1,0 +1,22 @@
+{% extends "home.html" %}
+
+{% block content %}
+    <h3>搜索页</h3>
+    <br>
+    <form method="post" action="/upload" enctype="multipart/form-data">
+        {{ form.csrf_token }}
+        {{ form.file.label }}{{ form.file }} <br>
+        <br>
+        {{ form.submit }}
+    </form>
+    {% if match_result %}
+        <div class="match-result">
+            {{ match_result }}
+        </div>
+        <br>
+        <div>
+            <img src="data:image/png;base64,{{ base64.b64encode(image).decode('utf-8') }}" width="100px" height="100px">
+        </div>
+    {% endif %}
+
+{% endblock %}

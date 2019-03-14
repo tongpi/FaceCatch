@@ -1,0 +1,15 @@
+{% extends 'home.html' %}
+
+{% block content %}
+    <h3>详情页</h3>
+    <div>
+        <h3>人员名称：{{ person.name }}</h3>
+        证件号：{{ person.id_card }}<br>
+        描述：{{ person.description }}<br>
+        照片：<img src="data:image/png;base64,{{ image }}"><br>
+        <hr>
+        匹配结果：{{ person.face_feature }} <br>
+        相似度：{{ person.similarity }} %
+
+    </div>
+{% endblock %}

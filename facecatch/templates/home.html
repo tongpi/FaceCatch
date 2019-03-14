@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FaceCatch</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" type="image/png" href="/static/image/logo.png">
+</head>
+<body>
+    <div class="face-navigation">
+        <div class="face-title">
+            <a href="{{ url_for("facecatch.views.home") }}" class="face-title-content">人脸识别</a>
+            <a href="{{ url_for("facecatch.search.views.upload") }}" class="face-func">搜索</a>
+            <a href="{{ url_for("facecatch.staff.views.show") }}" class="face-func">人员管理</a>
+        </div>
+    </div>
+    <div class="face-content">
+    {% block content %}
+    {% endblock %}
+    </div>
+</body>
+</html>
