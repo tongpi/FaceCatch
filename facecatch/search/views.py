@@ -1,9 +1,10 @@
 import base64
 
 import flask
-from flask import request, render_template, redirect, url_for
+from flask import request, render_template
+from flask_cas import login_required
 
-from facecatch.staff.models import PersonInfo
+from facecatch.models import PersonInfo
 from facecatch.search.forms import UploadForm
 from facecatch.utils import get_feature
 
@@ -12,6 +13,7 @@ blueprint = flask.Blueprint(__name__, __name__)
 
 
 @blueprint.route('/', methods=['GET', 'POST'])
+@login_required
 def home():
     """将上传的图片进行比对"""
 

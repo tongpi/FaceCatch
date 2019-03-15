@@ -1,4 +1,4 @@
-from app import db
+from app import db, webapp
 
 
 class PersonInfo(db.Model):
@@ -14,3 +14,12 @@ class PersonInfo(db.Model):
 
     def __repr__(self):
         return '<User %r>' % self.name
+
+
+
+@webapp.before_first_request
+def create_db():
+    db.create_all()
+
+
+
