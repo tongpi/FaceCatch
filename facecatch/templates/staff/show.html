@@ -3,7 +3,7 @@
 {% block content %}
     <h3>展示页</h3>
 
-    <a href="{{ url_for("facecatch.staff.views.add") }}">信息录入</a>
+    <div><a href="{{ url_for("facecatch.staff.views.add") }}">信息录入</a></div>
 
     <br>
     {% for message in get_flashed_messages() %}
