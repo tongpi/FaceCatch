@@ -39,4 +39,5 @@ body{
 
 .search_input_file{
     width: 180px;
+    display: inline !important;
 }

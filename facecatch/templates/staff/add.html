@@ -2,6 +2,8 @@
 
 {% block content %}
     <h3>添加信息</h3>
+    <p>照片要求：1、图片为彩色证件照。
+        2、证件照图片尺寸：256*256 要求正脸</p>
     <form method="post" enctype="multipart/form-data">
         {{ form.csrf_token }}
         {{ form.file.label }}:{{ form.file }}<br>

@@ -8,13 +8,13 @@ from flask import session, redirect, url_for, request
 import settings
 
 
-def get_feature(image):
+def get_feature(image, model_id=settings.DIGITS_JOB_ID):
     """从digits分类模型获取图像识别的结果"""
 
     # digits模型分析的地址与job_id
     url = settings.DISCERN_URL
     data = {
-        'job_id': settings.DIGITS_JOB_ID,
+        'job_id': model_id,
     }
     files = {
         'image_file': image
@@ -28,6 +28,20 @@ def get_feature(image):
     similarity = float(predictions[0][1])
     return face_feature, similarity
 
+
+def get_models():
+    """从digits获取所有识别模型"""
+    url = settings.DISCERN_MODEL_URL
+    param = {
+        'username': 'admin123',
+        'password': 'admin123'
+    }
+    req = requests.get(url, param)
+    models = json.loads(req.content)['models']
+    model_list = []
+    for model in models:
+        model_list.append((model['job id'], model['name']))
+    return model_list
 
 # 登录装饰器
 def login_required(func):
