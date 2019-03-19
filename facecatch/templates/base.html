@@ -5,17 +5,66 @@
     <title>FaceCatch</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="icon" type="image/png" href="/static/image/logo.png">
+    <script src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
+
 </head>
 <body>
+
     <div class="face-navigation">
         <div class="face-title">
             <a href="{{ url_for("facecatch.search.views.home") }}" class="face-title-content">人脸识别</a>
             <a href="{{ url_for("facecatch.staff.views.show") }}" class="face-func">人员管理</a>
+            <span style="width: 350px;margin-left: 15px;">
+                系统当前模型：
+                <select class="face-func" id="select_model">
+             </select></span>
         </div>
     </div>
     <div class="face-content">
     {% block content %}
     {% endblock %}
     </div>
+
+    <script>
+      $(function(){
+          $.ajax({
+              type: 'post',
+              contentType: "application/json; charset=UTF-8",
+              headers: {'X-CSRFToken': '{{csrf_token()}}'},
+              url: '/get_models',
+              error: function (xhr, err) {
+                  alert('请求失败，原因可能是：' + err + '！');
+              },
+              success: function (data, textStatus) {
+                  $.each(data,function(name,value) {
+                        var option = $("<option>").val(name).text(value);
+                        $('#select_model').append(option);
+                  });
+              }
+          });
+
+
+          $('#select_model').change(function(){
+                //获取当前选择模型id
+                var model_id= $(this).children('option:selected').val(); //弹出select的值
+
+                //修改session中模型id值
+                $.ajax({
+                  type: 'post',
+                  contentType: "application/json; charset=UTF-8",
+                  headers: {'X-CSRFToken': '{{csrf_token()}}'},
+                  url: '/set_session',
+                  data:JSON.stringify({"model_id":model_id}),
+                  error: function (xhr, err) {
+                      alert('请求失败，原因可能是：' + err + '！');
+                  },
+                  success: function (data, textStatus) {
+                     console.log(data);
+                  }
+                 });
+            });
+
+    });
+    </script>
 </body>
 </html>

@@ -5,7 +5,7 @@ from flask import request, render_template, redirect, url_for
 
 from facecatch.staff.models import PersonInfo
 from facecatch.search.forms import UploadForm
-from facecatch.utils import get_feature, get_models
+from facecatch.utils import get_feature
 
 
 blueprint = flask.Blueprint(__name__, __name__)
