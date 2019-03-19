@@ -29,7 +29,7 @@ def get_feature(image, model_id=settings.DIGITS_JOB_ID):
     return face_feature, similarity
 
 
-def get_models():
+def get_all_models():
     """从digits获取所有识别模型"""
     url = settings.DISCERN_MODEL_URL
     param = {
@@ -38,10 +38,11 @@ def get_models():
     }
     req = requests.get(url, param)
     models = json.loads(req.content)['models']
-    model_list = []
+    model_dict = {}
     for model in models:
-        model_list.append((model['job id'], model['name']))
-    return model_list
+        model_dict[model['job id']] = model['name']
+    return model_dict
+
 
 # 登录装饰器
 def login_required(func):

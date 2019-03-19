@@ -6,7 +6,7 @@ from flask_cas import login_required
 
 from facecatch.models import PersonInfo
 from facecatch.search.forms import UploadForm
-from facecatch.utils import get_feature, get_models
+from facecatch.utils import get_feature
 
 
 blueprint = flask.Blueprint(__name__, __name__)
