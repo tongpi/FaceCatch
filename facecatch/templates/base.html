@@ -59,7 +59,9 @@
                       alert('请求失败，原因可能是：' + err + '！');
                   },
                   success: function (data, textStatus) {
-                     console.log(data);
+                     if (data='success') {
+                         location.reload()
+                     }
                   }
                  });
             });
