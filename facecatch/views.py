@@ -1,5 +1,7 @@
 import flask
-from flask import Response, jsonify, session, request
+from flask import jsonify, session, request, current_app
+from flask_cas.cas_urls import create_cas_logout_url
+
 from facecatch.utils import get_all_models
 import json
 
@@ -24,3 +26,28 @@ def set_model_session():
     model_id = json.loads(request.get_data().decode())['model_id']
     session['model_id'] = model_id
     return 'success'
+
+
+@blueprint.route('/logout', methods=['POST', 'GET'])
+def logout():
+    """用户注销处理"""
+    cas_username_session_key = current_app.config['CAS_USERNAME_SESSION_KEY']
+    cas_attributes_session_key = current_app.config['CAS_ATTRIBUTES_SESSION_KEY']
+
+    if cas_username_session_key in session:
+        del session[cas_username_session_key]
+
+    if cas_attributes_session_key in session:
+        del session[cas_attributes_session_key]
+
+    if (current_app.config['CAS_AFTER_LOGOUT'] != None):
+        redirect_url = create_cas_logout_url(
+            current_app.config['CAS_SERVER'],
+            current_app.config['CAS_LOGOUT_ROUTE'],
+            current_app.config['CAS_AFTER_LOGOUT'])
+    else:
+        redirect_url = create_cas_logout_url(
+            current_app.config['CAS_SERVER'],
+            current_app.config['CAS_LOGOUT_ROUTE'])
+
+    return flask.redirect(redirect_url)

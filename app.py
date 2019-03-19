@@ -11,14 +11,16 @@ import settings
 webapp = Flask(__name__, template_folder="facecatch/templates", static_folder="facecatch/static")
 cas = CAS(webapp)
 
-webapp.secret_key = settings.FLASK_SECRET_KEY
 
 ssl._create_default_https_context = ssl._create_unverified_context
 webapp.config['CAS_SERVER'] = settings.CAS_SERVER
 webapp.config['CAS_AFTER_LOGIN'] = settings.CAS_AFTER_LOGIN
-webapp.config['SECRET_KEY'] = settings.FLASK_SECRET_KEY
 webapp.config['CAS_VALIDATE_ROUTE'] = settings.CAS_VALIDATE_ROUTE
+webapp.config['CAS_LOGOUT_ROUTE'] = settings.CAS_LOGOUT_ROUTE
+webapp.config['CAS_AFTER_LOGOUT'] = settings.CAS_AFTER_LOGOUT
 
+
+webapp.config['SECRET_KEY'] = settings.FLASK_SECRET_KEY
 webapp.config['SQLALCHEMY_DATABASE_URI'] = settings.SQLALCHEMY_DATABASE_URI
 webapp.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = settings.SQLALCHEMY_TRACK_MODIFICATIONS
 db = SQLAlchemy(webapp)

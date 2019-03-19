@@ -23,6 +23,7 @@ body{
     color: #fff;
     text-decoration: none;
     margin-right: 30px;
+    font-size: 24px;
 }
 .face-content{
     padding-top: 40px;
@@ -31,13 +32,31 @@ body{
 .face-func{
     padding: 3px;
     color: #fff;
-    text-decoration: none;
     font-size: 13px;
     border-radius: 2px;
     background-color: #6FC3DC;
 }
-
 .search_input_file{
     width: 180px;
     display: inline !important;
+}
+.face-user-navigation{
+    float: right;
+    margin-right: 40px;
+    font-size: 15px;
+}
+.face-user-navigation a{
+    text-decoration: none;
+    color: #ffffff;
+}
+.face-btn{
+    border-radius: 3px;
+    border: none;
+    background: #6FC3DC;
+    padding: 3px 5px;
+}
+.face-btn a{
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
 }

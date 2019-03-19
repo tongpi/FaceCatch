@@ -1,9 +1,10 @@
 import base64
 
 import flask
-from flask import request, render_template
+from flask import request, render_template, session
 from flask_cas import login_required
 
+from app import cas
 from facecatch.models import PersonInfo
 from facecatch.search.forms import UploadForm
 from facecatch.utils import get_feature
@@ -16,6 +17,7 @@ blueprint = flask.Blueprint(__name__, __name__)
 @login_required
 def home():
     """将上传的图片进行比对"""
+    session['username'] = cas.username
 
     upload_form = UploadForm()
     return render_template('search/search.html',
