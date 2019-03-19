@@ -2,6 +2,7 @@ import base64
 
 import flask
 from flask import request, render_template, redirect, url_for, flash, session
+from flask_cas import login_required
 
 from app import db
 from facecatch.models import PersonInfo
@@ -13,6 +14,7 @@ blueprint = flask.Blueprint(__name__, __name__)
 
 
 @blueprint.route('/add', methods=['GET', 'POST'])
+@login_required
 def add():
     """将录入信息处理后存储到数据库中"""
 
@@ -43,6 +45,7 @@ def add():
 
 
 @blueprint.route('/show', methods=['GET'])
+@login_required
 def show():
     """返回录入信息展示页面"""
     persons = PersonInfo.query.filter(PersonInfo.model_id == session['model_id'])
@@ -51,6 +54,7 @@ def show():
 
 
 @blueprint.route('/detail/<person_id>', methods=['GET', 'POST'])
+@login_required
 def detail(person_id):
     """返回录入信息详情页"""
 
@@ -61,6 +65,7 @@ def detail(person_id):
 
 
 @blueprint.route('/delete_person/<person_id>', methods=['GET'])
+@login_required
 def delete_person(person_id):
     """删除指定人员信息"""
 
@@ -72,6 +77,7 @@ def delete_person(person_id):
 
 
 @blueprint.route('/update_person/<person_id>', methods=['GET', 'POST'])
+@login_required
 def update_person(person_id):
     """修改指定人员的信息"""
 

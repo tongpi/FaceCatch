@@ -26,6 +26,7 @@ def home():
 
 
 @blueprint.route('/search', methods=['POST'])
+@login_required
 def search():
     upload_form = UploadForm()
 

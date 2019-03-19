@@ -1,5 +1,6 @@
 import flask
 from flask import jsonify, session, request, current_app
+from flask_cas import login_required
 from flask_cas.cas_urls import create_cas_logout_url
 
 from facecatch.utils import get_all_models
@@ -10,6 +11,7 @@ blueprint = flask.Blueprint(__name__, __name__)
 
 
 @blueprint.route('/get_models', methods=['POST', 'GET'])
+@login_required
 def get_models():
     """获取模型列表，将默认模型存储至session"""
     model_dict = get_all_models()
@@ -29,6 +31,7 @@ def set_model_session():
 
 
 @blueprint.route('/logout', methods=['POST', 'GET'])
+@login_required
 def logout():
     """用户注销处理"""
     cas_username_session_key = current_app.config['CAS_USERNAME_SESSION_KEY']
