@@ -30,10 +30,10 @@ def search():
     upload_form = UploadForm()
 
     upload_file = request.files['file'].read()
-    face_feature, similarity = get_feature(upload_file, request.form['select'])
+    face_feature, similarity = get_feature(upload_file, session['model_id'])
 
     if similarity > 70:
-        person = PersonInfo.query.filter(PersonInfo.face_feature == face_feature).first()
+        person = PersonInfo.query.filter(PersonInfo.face_feature == face_feature, PersonInfo.model_id == session['model_id']).first()
         if person:
             person_info = person
             return render_template('search/search.html', form=upload_form, base64=base64, person=person_info, image=upload_file)

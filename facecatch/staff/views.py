@@ -1,7 +1,7 @@
 import base64
 
 import flask
-from flask import request, render_template, redirect, url_for, flash
+from flask import request, render_template, redirect, url_for, flash, session
 
 from app import db
 from facecatch.models import PersonInfo
@@ -17,16 +17,18 @@ def add():
     """将录入信息处理后存储到数据库中"""
 
     add_form = AddForm()
+    model_id = session['model_id']
     if request.method == 'POST':
         image = request.files['file'].read()
 
-        face_feature, similarity = get_feature(image)
+        face_feature, similarity = get_feature(image, model_id)
 
         # 将录入信息存储到数据库
         person = PersonInfo(
             name=request.form['name'],
             id_card=request.form['id_card'],
             description=request.form['description'],
+            model_id=model_id,
             face_feature=face_feature,
             similarity=similarity,
             image=image
@@ -43,8 +45,7 @@ def add():
 @blueprint.route('/show', methods=['GET'])
 def show():
     """返回录入信息展示页面"""
-
-    persons = PersonInfo.query.all()
+    persons = PersonInfo.query.filter(PersonInfo.model_id == session['model_id'])
 
     return render_template('staff/show.html', persons=persons, base64=base64)
 
@@ -93,7 +94,7 @@ def update_person(person_id):
                 image = None
 
             person.image = image
-            face_feature, similarity = get_feature(image)
+            face_feature, similarity = get_feature(image, session['model_id'])
             person.face_feature = face_feature
             person.similarity = similarity
 
