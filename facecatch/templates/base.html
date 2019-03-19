@@ -6,15 +6,13 @@
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="icon" type="image/png" href="/static/image/logo.png">
     <script src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
-
 </head>
 <body>
-
     <div class="face-navigation">
         <div class="face-title">
             <a href="{{ url_for("facecatch.search.views.home") }}" class="face-title-content">人脸识别</a>
             <a href="{{ url_for("facecatch.staff.views.show") }}" class="face-func">人员管理</a>
-            <span style="width: 350px;margin-left: 15px;">
+            <span style="width: 350px;margin-left: 15px;"><input type="hidden" id="model_id" value="{{ session.get('model_id') }}">
                 系统当前模型：
                 <select class="face-func" id="select_model">
              </select></span>
@@ -27,6 +25,7 @@
 
     <script>
       $(function(){
+          //初始化设置系统模型下拉列表
           $.ajax({
               type: 'post',
               contentType: "application/json; charset=UTF-8",
@@ -37,7 +36,12 @@
               },
               success: function (data, textStatus) {
                   $.each(data,function(name,value) {
-                        var option = $("<option>").val(name).text(value);
+                      //设置列表当前选择的模型
+                      if ($("#model_id").val() == name){
+                            var option = $("<option selected>").val(name).text(value);
+                        }else{
+                            var option = $("<option>").val(name).text(value);
+                        }
                         $('#select_model').append(option);
                   });
               }
@@ -46,7 +50,7 @@
 
           $('#select_model').change(function(){
                 //获取当前选择模型id
-                var model_id= $(this).children('option:selected').val(); //弹出select的值
+                var model_id= $(this).children('option:selected').val();
 
                 //修改session中模型id值
                 $.ajax({

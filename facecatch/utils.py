@@ -8,7 +8,7 @@ from flask import session, redirect, url_for, request
 import settings
 
 
-def get_feature(image, model_id=settings.DIGITS_JOB_ID):
+def get_feature(image, model_id):
     """从digits分类模型获取图像识别的结果"""
 
     # digits模型分析的地址与job_id

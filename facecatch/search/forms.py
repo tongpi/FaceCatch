@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import FileField, SubmitField, SelectField
+from wtforms import FileField, SubmitField, StringField
 from wtforms.validators import DataRequired
 
 
@@ -9,4 +9,3 @@ class UploadForm(FlaskForm):
     """
     file = FileField("上传图片", validators=[DataRequired()])
     submit = SubmitField("搜索")
-    select = SelectField('选择识别模型', validators=[DataRequired()])
