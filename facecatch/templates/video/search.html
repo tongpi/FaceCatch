@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content%}
+    <div>
+        <h1>在线识别</h1>
+        <img id="imageid" src="{{url_for('facecatch.video.views.video_feed')}}" style="width: 600px;height: 450px;">
+        <br>
+        <br>
+        <br>
+        <div id="result_id"></div>
+    </div>
+     <script>
+      $(function() {
+          setTimeout(function(){
+                setTimer();
+            },2000);
+          function setTimer(){
+              // 设置间隔7秒进行一次识别
+              setInterval(recognize, 7000)
+          }
+        });
+
+        // 进行识别请求
+        function recognize(){
+              $.ajax({
+                  type: 'post',
+                  contentType: "application/json; charset=UTF-8",
+                  headers: {'X-CSRFToken': '{{csrf_token()}}'},
+                  url: '/recognize',
+                  success: function (data) {
+                      var result_html = '<h4>识别结果：</h4>'
+                        if (data['message'] != '' && data['message'] != null){
+                            personInfo = data['message']
+                            result_html += '<p>姓名：'+ personInfo['name'] +'</p> ' +
+                                '<p>证件号：'+ personInfo['id_card'] +'</p> ' +
+                                '<p>描述：'+ personInfo['description'] +'</p>'
+                        }
+
+                        if(data['not_message']!='' && data['not_message'] != null){
+                            result_html += "<span>"+ data['not_message'] +"</span>"
+                        }
+
+                      $("#result_id").empty();
+                      $("#result_id").append(result_html)
+                  }
+              });
+            }
+      </script>
+{% endblock %}
