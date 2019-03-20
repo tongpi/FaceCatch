@@ -12,7 +12,6 @@ blueprint = flask.Blueprint(__name__, __name__)
 
 class VideoCamera(object):
     def __init__(self):
-
         # 通过opencv获取实时视频流
         self.video = cv2.VideoCapture(0)
 
@@ -73,7 +72,7 @@ def recognize():
 @blueprint.route('/view_video')
 def view_video():
     """在线识别跳转"""
-    return render_template('video/search.html')
+    return render_template('realtime_video/search.html')
 
 
 

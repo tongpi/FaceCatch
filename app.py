@@ -31,7 +31,7 @@ from facecatch.staff import views
 webapp.register_blueprint(views.blueprint)
 from facecatch.search import views
 webapp.register_blueprint(views.blueprint)
-from facecatch.video import views
+from facecatch.realtime_video import views
 webapp.register_blueprint(views.blueprint)
 
 CSRFProtect(webapp)
