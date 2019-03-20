@@ -23,7 +23,6 @@ def get_feature(image, model_id):
     # 从digits获取json数据
     req = requests.post(url=url, data=data, files=files)
     predictions = json.loads(req.content.decode('utf-8'))['predictions']
-
     face_feature = str(predictions[0][0])
     similarity = float(predictions[0][1])
     return face_feature, similarity

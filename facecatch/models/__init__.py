@@ -13,9 +13,17 @@ class PersonInfo(db.Model):
 
     __tablename__ = 'person_info'
 
-    def __repr__(self):
-        return '<User %r>' % self.name
-
+    def to_dict(self):
+        d = {
+            'id': self.id,
+            'name': self.name,
+            'id_card': self.id_card,
+            'model_id': self.model_id,
+            'description': self.description,
+            'face_feature': self.face_feature,
+            'similarity': self.similarity,
+        }
+        return d
 
 
 @webapp.before_first_request

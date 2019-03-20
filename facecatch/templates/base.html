@@ -6,29 +6,6 @@
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="icon" type="image/png" href="/static/image/logo.png">
     <script src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
-</head>
-<body>
-    <div class="face-navigation">
-        <div class="face-title">
-            <a href="{{ url_for("facecatch.search.views.home") }}" class="face-title-content">人脸识别</a>
-            <button class="face-btn">
-                <a href="{{ url_for("facecatch.staff.views.show") }}">人员管理</a>
-            </button>
-            <span style="width: 350px;margin-left: 15px;"><input type="hidden" id="model_id" value="{{ session.get('model_id') }}">
-                系统当前模型：
-                <select class="face-func" id="select_model">
-             </select></span>
-            <div class="face-user-navigation">
-                欢迎您：<a href="#">{{ session.get('username') }}</a>！
-                <button class="face-btn"><a href="{{ url_for('facecatch.views.logout') }}">注销</a></button>
-            </div>
-        </div>
-    </div>
-    <div class="face-content">
-    {% block content %}
-    {% endblock %}
-    </div>
-
     <script>
       $(function(){
           //初始化设置系统模型下拉列表
@@ -37,9 +14,6 @@
               contentType: "application/json; charset=UTF-8",
               headers: {'X-CSRFToken': '{{csrf_token()}}'},
               url: '/get_models',
-              error: function (xhr, err) {
-                  alert('请求失败，原因可能是：' + err + '！');
-              },
               success: function (data, textStatus) {
                   $.each(data,function(name,value) {
                       //设置列表当前选择的模型
@@ -65,9 +39,6 @@
                   headers: {'X-CSRFToken': '{{csrf_token()}}'},
                   url: '/set_session',
                   data:JSON.stringify({"model_id":model_id}),
-                  error: function (xhr, err) {
-                      alert('请求失败，原因可能是：' + err + '！');
-                  },
                   success: function (data, textStatus) {
                      if (data='success') {
                          location.reload()
@@ -75,8 +46,32 @@
                   }
                  });
             });
-
     });
     </script>
+</head>
+<body>
+    <div class="face-navigation">
+        <div class="face-title">
+            <a href="{{ url_for("facecatch.search.views.home") }}" class="face-title-content">人脸识别</a>
+            <button class="face-btn">
+                <a href="{{ url_for("facecatch.video.views.view_video") }}">在线识别</a>
+            </button>
+            <button class="face-btn">
+                <a href="{{ url_for("facecatch.staff.views.show") }}">人员管理</a>
+            </button>
+            <span style="width: 350px;margin-left: 15px;"><input type="hidden" id="model_id" value="{{ session.get('model_id') }}">
+                系统当前模型：
+                <select class="face-func" id="select_model">
+             </select></span>
+            <div class="face-user-navigation">
+                欢迎您：<a href="#">{{ session.get('username') }}</a>！
+                <button class="face-btn"><a href="{{ url_for('facecatch.views.logout') }}">注销</a></button>
+            </div>
+        </div>
+    </div>
+    <div class="face-content">
+    {% block content %}
+    {% endblock %}
+    </div>
 </body>
 </html>
