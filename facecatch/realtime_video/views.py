@@ -20,13 +20,32 @@ class VideoCamera(object):
 
     def get_frame(self):
         success, image = self.video.read()
+        # 用作人脸检测并标记
+        face_image = face_mark(image)
         try:
             # 因为opencv读取的图片并非jpeg格式，因此要用motion JPEG模式需要先将图片转码成jpg格式图片
-            ret, jpeg = cv2.imencode('.jpg', image)
+            ret, jpeg = cv2.imencode('.jpg', face_image)
         except:
             self.video.release()
             return None
         return jpeg.tobytes(), jpeg
+
+
+def face_mark(image):
+    if image != None:
+        """用于检测并标记图像中的人脸"""
+        # 调用cv2 自带的检测网络
+        detector = cv2.CascadeClassifier(r'D:\ProgramData-py3\Anaconda3\envs\FaceCatch\Lib\site-packages\cv2\data\haarcascade_frontalface_default.xml')
+        # 将图像转为灰度图
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        # 检测图像中存在的人脸
+        faces = detector.detectMultiScale(gray, 1.3, 5)
+        # 将图像中存在的人脸用方框标记出来
+        for (x, y, w, h) in faces:
+            cv2.rectangle(image, (x, y), (x + w, y + h), (220, 195, 111), 2)
+        # 将标记后的图像还原为彩色图显示
+        cv2.imshow('frame', image)
+    return image
 
 
 def image_gen(camera):
@@ -35,7 +54,6 @@ def image_gen(camera):
         frame, jpeg = camera.get_frame()
         # 此全局变量用来保存用作人脸识别的帧图片
         IMAGE_B = jpeg
-
         if frame:
             # 使用generator函数输出视频流， 每次请求输出的content类型是image/jpeg
             yield (b'--frame\r\n'
@@ -58,7 +76,7 @@ def recognize():
     face_feature, similarity = get_feature(image, model_id)
     # 定义返回结果字典
     result_message = {}
-    if similarity > 0:
+    if similarity > 40:
         # 从基础人员库中获取人员信息
         person = PersonInfo.query.filter(PersonInfo.face_feature == face_feature, PersonInfo.model_id == model_id).first()
         if person:
