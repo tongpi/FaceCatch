@@ -1,5 +1,6 @@
 import flask
 import cv2
+import numpy
 
 from flask import render_template, Response, session, jsonify
 
@@ -12,7 +13,7 @@ blueprint = flask.Blueprint(__name__, __name__)
 
 class VideoCamera(object):
     def __init__(self):
-        # 通过opencv获取实时视频流
+        # 通过opencv获取单个实时视频流
         self.video = cv2.VideoCapture(0)
 
     def __del__(self):
@@ -32,10 +33,10 @@ class VideoCamera(object):
 
 
 def face_mark(image):
-    if image != None:
-        """用于检测并标记图像中的人脸"""
+    """用于检测并标记图像中的人脸"""
+    if isinstance(image, numpy.ndarray):
         # 调用cv2 自带的检测网络
-        detector = cv2.CascadeClassifier(r'D:\ProgramData-py3\Anaconda3\envs\FaceCatch\Lib\site-packages\cv2\data\haarcascade_frontalface_default.xml')
+        detector = cv2.CascadeClassifier('D:\\ProgramData-py3\\Anaconda3\\envs\\FaceCatch\\Lib\\site-packages\\cv2\\data\\haarcascade_frontalface_default.xml')
         # 将图像转为灰度图
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         # 检测图像中存在的人脸
@@ -43,8 +44,8 @@ def face_mark(image):
         # 将图像中存在的人脸用方框标记出来
         for (x, y, w, h) in faces:
             cv2.rectangle(image, (x, y), (x + w, y + h), (220, 195, 111), 2)
-        # 将标记后的图像还原为彩色图显示
-        cv2.imshow('frame', image)
+        # # 将标记后的图像还原为彩色图显示
+        # cv2.imshow('frame', image)
     return image
 
 

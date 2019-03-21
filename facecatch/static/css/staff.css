@@ -6,6 +6,7 @@
 }
 
 .show-body table {
+	width: 100%;
     border-bottom-width: 1px;
     border-bottom-style: solid;
     border-bottom-color: #a8bfde;
@@ -19,7 +20,11 @@
 }
 
 .show-body table th{
-    width: 195px;
+    width: 20%;
+}
+
+.show-body{
+	width: 90%;
 }
 
 .show-body .th-title{
