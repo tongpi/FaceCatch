@@ -1,15 +1,33 @@
 {% extends "base.html" %}
 
+{% block head %}
+    <link rel="stylesheet" href="/static/css/staff.css">
+{% endblock %}
+
 {% block content %}
-    <h3>添加信息</h3>
-    <p>照片要求：1、图片为彩色证件照。
-        2、证件照图片尺寸：256*256 要求正脸</p>
-    <form method="post" enctype="multipart/form-data">
-        {{ form.csrf_token }}
-        {{ form.file.label }}:{{ form.file }}<br>
-        {{ form.name.label }}:{{ form.name }}<br>
-        {{ form.id_card.label }}:{{ form.id_card }}<br>
-        {{ form.description.label }}: {{ form.description }}<br>
-        {{ form.submit }}
-    </form>
+    <div class="face-add-content">
+        <h3>添加信息</h3>
+            <span class="add-title-description">
+                照片要求：
+                1、图片为彩色证件照。
+                2、证件照图片尺寸：256*256 要求正脸。
+            </span>
+        <form method="post" enctype="multipart/form-data" class="face-add-form">
+            {{ form.csrf_token }}
+            <label>
+                <span>{{ form.file.label }}</span>{{ form.file }}
+            </label>
+            <label>
+                <span>{{ form.name.label }}</span>{{ form.name }}
+            </label>
+            <label>
+                <span>{{ form.id_card.label }}</span>{{ form.id_card }}
+            </label>
+            <label>
+                <span>{{ form.description.label }}</span>{{ form.description }}
+            </label>
+            <label  class="upload-file-submit">{{ form.submit }}</label>
+
+        </form>
+    </div>
 {% endblock %}

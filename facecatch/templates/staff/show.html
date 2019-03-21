@@ -1,35 +1,41 @@
 {% extends 'base.html' %}
 
+{% block head %}
+    <link rel="stylesheet" href="/static/css/staff.css">
+{% endblock %}
+
 {% block content %}
     <h3>展示页</h3>
-
-    <div><a href="{{ url_for("facecatch.staff.views.add") }}">信息录入</a></div>
+    <br>
+    <button class="face-btn"><a href="{{ url_for("facecatch.staff.views.add") }}">信息录入</a></button>
 
     <br>
     {% for message in get_flashed_messages() %}
         {{ message }}
     {% endfor %}
     <br>
-    <table>
-        <tr>
-            <th>图片</th>
-            <th>姓名</th>
-            <th>证件号</th>
-            <th>描述</th>
-            <th>操作</th>
+    <div class="show-body">
+        <table>
+            <tr>
+                <th class="th-title">图片</th>
+                <th class="th-title">姓名</th>
+                <th class="th-title">证件号</th>
+                <th class="th-title">描述</th>
+                <th class="th-title">操作</th>
 
-        </tr>
-        {% for person in persons %}
-        <tr>
-            <th><img src="data:image/png;base64,{{ base64.b64encode(person.image).decode('utf-8') }}" height="50px" width="50px"></th>
-            <th><a href="{{ url_for('facecatch.staff.views.detail', person_id=person.id) }}">{{ person.name }}</a></th>
-            <th>{{ person.id_card }}</th>
-            <th>{{ person.description }}</th>
-            <th>
-                <a href="{{ url_for("facecatch.staff.views.update_person", person_id=person.id) }}">编辑</a>
-                <a href="{{ url_for('facecatch.staff.views.delete_person', person_id=person.id) }}" onclick="if(confirm('确定要删除？')){return true;}else{return false;}">删除</a>
-            </th>
-        </tr>
-        {% endfor %}
-    </table>
+            </tr>
+            {% for person in persons %}
+            <tr>
+                <th><img src="data:image/png;base64,{{ base64.b64encode(person.image).decode('utf-8') }}" width="100px"></th>
+                <th><a href="{{ url_for('facecatch.staff.views.detail', person_id=person.id) }}">{{ person.name }}</a></th>
+                <th>{{ person.id_card }}</th>
+                <th>{{ person.description }}</th>
+                <th>
+                    <a href="{{ url_for("facecatch.staff.views.update_person", person_id=person.id) }}">编辑</a>
+                    <a href="{{ url_for('facecatch.staff.views.delete_person', person_id=person.id) }}" onclick="if(confirm('确定要删除？')){return true;}else{return false;}">删除</a>
+                </th>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 {% endblock %}

@@ -31,11 +31,7 @@ def get_feature(image, model_id):
 def get_all_models():
     """从digits获取所有识别模型"""
     url = settings.DISCERN_MODEL_URL
-    param = {
-        'username': 'admin123',
-        'password': 'admin123'
-    }
-    req = requests.get(url, param)
+    req = requests.get(url)
     models = json.loads(req.content)['models']
     model_dict = {}
     for model in models:

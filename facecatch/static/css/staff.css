@@ -1,0 +1,109 @@
+/********************** show ****************************/
+.show-body table thead, table tr {
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-top-color: #a8bfde;
+}
+
+.show-body table {
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #a8bfde;
+}
+
+.show-body table td, table th {
+    padding: 5px 10px;
+    font-size: 12px;
+    font-family: Verdana;
+    color: #5b7da3;
+}
+
+.show-body table th{
+    width: 195px;
+}
+
+.show-body .th-title{
+    font-size:14px;
+}
+
+.show-body table tr:nth-child(even) {
+    background: #d3dfed
+}
+
+.show-body table tr:nth-child(odd) {
+    background: #FFF
+}
+
+/********************** add ****************************/
+.face-add-form{
+	max-width: 500px;
+	background: #fff;
+	padding: 20px;
+	color: #666;
+    border-radius: 5px;
+    border: none;
+    margin-top: 30px;
+}
+.face-add-form h3{
+	font: 24px "Trebuchet MS", Arial, Helvetica, sans-serif;
+	padding: 10px 10px 10px 20px;
+	display: block;
+	background: #C0E1FF;
+	border-bottom: 1px solid #B8DDFF;
+	margin: -20px -20px 15px;
+}
+.add-title-description{
+	display: block;
+	font-size: 11px;
+    color: #808080;
+}
+.face-add-form label{
+	display: block;
+	margin: 0;
+}
+.face-add-form label>span{
+	float: left;
+	width: 20%;
+	text-align: right;
+	padding-right: 15px;
+	margin-top: 10px;
+	font-weight: bold;
+}
+.face-add-form input[type="text"],
+.face-add-form input[type="file"]{
+	color: #888;
+	width: 70%;
+	padding: 0px 0px 0px 5px;
+	border: 1px solid #C5E2FF;
+	background: #FBFBFB;
+	outline: 0;
+	-webkit-box-shadow:inset 0px 1px 6px #ECF3F5;
+	box-shadow: inset 0px 1px 6px #ECF3F5;
+	height: 30px;
+	line-height:15px;
+	margin: 2px 6px 16px 0px;
+}
+.face-add-form input[type="submit"]{
+	padding: 10px 30px 10px 30px;
+	background: #66C1E4;
+	border: none;
+    border-radius: 3px;
+	color: #FFF;
+	-webkit-box-shadow: 1px 1px 1px #4C6E91;
+	text-shadow: 1px 1px 1px #5079A3;
+}
+.face-add-form input[type="submit"]:hover{
+	background: #3EB1DD;
+}
+.face-add-form .upload-file-submit{
+    display: block;
+    text-align: center;
+}
+
+
+
+
+
+
+
+
