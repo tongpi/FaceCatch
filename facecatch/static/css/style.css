@@ -36,10 +36,6 @@ body{
     border-radius: 2px;
     background-color: #6FC3DC;
 }
-.search_input_file{
-    width: 180px;
-    display: inline !important;
-}
 .face-user-navigation{
     float: right;
     margin-right: 40px;

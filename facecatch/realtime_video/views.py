@@ -91,6 +91,3 @@ def recognize():
 def view_video():
     """在线识别跳转"""
     return render_template('realtime_video/search.html')
-
-
-

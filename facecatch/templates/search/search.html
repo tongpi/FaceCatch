@@ -1,30 +1,32 @@
 {% extends "base.html" %}
 
+{% block head %}
+    <link rel="stylesheet" href="/static/css/search.css">
+{% endblock %}
+
 {% block content %}
     <h3>搜索页</h3>
     <br>
     <form method="post" action="/search" enctype="multipart/form-data">
         <div style="float: left">
             {{ form.csrf_token }}
-            {{ form.file.label }}{{ form.file(class="search_input_file") }} </div>
+            <a href="#" class="a-upload">{{ form.file }}上传文件</a>
+            {{ form.submit(class="search_submit") }}</div>
     </form>
-    {% if person %}
-        <div style="margin-top:50px;margin-bottom: 15px;"><h4>搜索结果</h4></div>
         <div class="match-result">
-            <p><img src="data:image/png;base64,{{ base64.b64encode(image).decode('utf-8') }}" width="100px" height="100px"></p>
-            <p>姓名：{{ person.name }}</p>
-            <p>证件号：{{ person.id_card }}</p>
-            <p>描述：{{ person.description }}</p>
+            {% if person %}
+                <h4>搜索结果</h4>
+                <ul>
+                    <li><img src="data:image/png;base64,{{ base64.b64encode(image).decode('utf-8') }}" width="200px"></li>
+                    <li>姓名：{{ person.name }}</li>
+                    <li>证件号：{{ person.id_card }}</li>
+                    <li>描述：{{ person.description }}</li>
+                </ul>
+            {% endif %}
+            {% if match_result %}
+                <h4>搜索结果</h4>
+                <img src="data:image/png;base64,{{ base64.b64encode(image).decode('utf-8') }}" width="200px">
+                {{ match_result }}
+            {% endif %}
         </div>
-        <div>
-        </div>
-    {% endif %}
-    {% if match_result %}
-        <div style="margin-top:50px;margin-bottom: 15px;"><h4>搜索结果</h4></div>
-        <div class="match-result">
-             <img src="data:image/png;base64,{{ base64.b64encode(image).decode('utf-8') }}" width="100px" height="100px">
-            {{ match_result }}
-        </div>
-    {% endif %}
-
 {% endblock %}
