@@ -44,16 +44,20 @@ def face_mark(image):
         # 将图像中存在的人脸用方框标记出来
         for (x, y, w, h) in faces:
             cv2.rectangle(image, (x, y), (x + w, y + h), (220, 195, 111), 2)
-        # # 将标记后的图像还原为彩色图显示
-        # cv2.imshow('frame', image)
     return image
 
 
 def image_gen(camera):
+    """用于生成视频帧图片的生成器"""
+    # 此全局变量用来保存用作人脸识别的帧图片
     global IMAGE_B
     while True:
-        frame, jpeg = camera.get_frame()
-        # 此全局变量用来保存用作人脸识别的帧图片
+        # 捕获异常用于摄像头关闭时重新自动连接
+        try:
+            frame, jpeg = camera.get_frame()
+        except:
+            camera.video = cv2.VideoCapture(0)
+            pass
         IMAGE_B = jpeg
         if frame:
             # 使用generator函数输出视频流， 每次请求输出的content类型是image/jpeg
