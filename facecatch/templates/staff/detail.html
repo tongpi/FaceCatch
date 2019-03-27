@@ -5,11 +5,9 @@
     <br>
     <div>
         <h4>人员名称：{{ person.name }}</h4>
-        照片：<img width="300px" src="data:image/png;base64,{{ image }}"><br>
+        照片：<img width="300px" src="data:image/png;base64,{{ bytes(person.image).decode() }}"><br>
         证件号：{{ person.id_card }}<br>
         描述：{{ person.description }}<br>
-        <hr>
-        匹配结果：{{ person.face_feature }} <br>
-        相似度：{{ person.similarity }} %
+
     </div>
 {% endblock %}

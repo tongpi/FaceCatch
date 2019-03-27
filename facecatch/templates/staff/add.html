@@ -30,4 +30,23 @@
 
         </form>
     </div>
+    <script>
+        $(function(){
+            $("#file").change(function(){
+                $.ajax({
+                    type:"POST",
+                    contentType:"application/json; charset=utf-8",
+                    headers:{"X-CSRFToken":'{{ csrf_token() }}'},
+                    url:"{{ url_for('facecatch.staff.views.inspect_image') }}",
+                    data:{"image_file":document.getElementById("file")},
+                    success: function (data) {
+                        if(data != 'success'){
+                            alert("照片不符合要求请重新选择上传。")
+                        }
+                    }
+                });
+            });
+        })
+
+    </script>
 {% endblock %}

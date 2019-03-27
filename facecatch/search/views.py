@@ -7,7 +7,7 @@ from flask_cas import login_required
 from app import cas
 from facecatch.models import PersonInfo
 from facecatch.search.forms import UploadForm
-from facecatch.utils import get_feature
+from facecatch.utils import get_image_face, get_same_person
 
 
 blueprint = flask.Blueprint(__name__, __name__)
@@ -29,23 +29,24 @@ def home():
 @login_required
 def search():
     upload_form = UploadForm()
-    model_id = session['model_id']
     upload_file = request.files['file'].read()
-    face_feature, similarity = get_feature(upload_file, model_id)
-
-    if similarity > 70:
-        person = PersonInfo.query.filter(PersonInfo.face_feature == face_feature, PersonInfo.model_id == model_id).first()
-        if person:
+    face_list = get_image_face(upload_file)
+    if len(face_list) >= 1:
+        person, distance = get_same_person(face_list[0]['faceID'])
+        if distance < 0.7:
             person_info = person
-            return render_template('search/search.html', form=upload_form, base64=base64, person=person_info, image=upload_file)
+            return render_template('search/search.html', form=upload_form, person=person_info, image=upload_file, base64=base64)
+        else:
+            match_result = '该人员信息未知。'
+    else:
+        match_result = '信息未知。'
 
-    match_result = '该人员信息未知。'
     return render_template(
             'search/search.html',
             form=upload_form,
-            base64=base64,
             image=upload_file,
-            match_result=match_result)
+            match_result=match_result,
+            base64=base64)
 
 
 

@@ -6,7 +6,7 @@
 
     <form method="post" enctype="multipart/form-data" novalidate="novalidate">
         {{ form.csrf_token }}
-        图片：<img src="data:image/png;base64,{{ base64.b64encode(person.image).decode('utf-8') }}" width="100px" height="100px">
+        图片：<img src="data:image/png;base64,{{ bytes(person.image).decode() }}" width="100px" height="100px">
         <br>{{ form.file }}<br>
         人员名称：{{ person.name }}
         <br>{{ form.name }}<br>

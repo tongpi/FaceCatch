@@ -26,7 +26,7 @@
             </tr>
             {% for person in persons %}
             <tr>
-                <th><img src="data:image/png;base64,{{ base64.b64encode(person.image).decode('utf-8') }}" width="100px"></th>
+                <th><img src="data:image/png;base64,{{ bytes(person.image).decode() }}" width="100px"></th>
                 <th><a href="{{ url_for('facecatch.staff.views.detail', person_id=person.id) }}">{{ person.name }}</a></th>
                 <th>{{ person.id_card }}</th>
                 <th>{{ person.description }}</th>

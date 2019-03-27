@@ -16,7 +16,7 @@
             },2000);
           function setTimer(){
               // 设置间隔7秒进行一次识别
-              setInterval(recognize, 7000)
+              setInterval(recognize, 2000)
           }
         });
 
@@ -28,16 +28,16 @@
                   headers: {'X-CSRFToken': '{{csrf_token()}}'},
                   url: '/recognize',
                   success: function (data) {
-                      var result_html = '<h4>识别结果：</h4>'
+                      var result_html = ''
                         if (data['message'] != '' && data['message'] != null){
                             personInfo = data['message']
-                            result_html += '<p>姓名：'+ personInfo['name'] +'</p> ' +
+                            result_html += '<h4>识别结果：</h4><p>姓名：'+ personInfo['name'] +'</p> ' +
                                 '<p>证件号：'+ personInfo['id_card'] +'</p> ' +
                                 '<p>描述：'+ personInfo['description'] +'</p>'
                         }
 
                         if(data['not_message']!='' && data['not_message'] != null){
-                            result_html += "<span>"+ data['not_message'] +"</span>"
+                            result_html += "<h4>识别结果：</h4><span>"+ data['not_message'] +"</span>"
                         }
 
                       $("#result_id").empty();

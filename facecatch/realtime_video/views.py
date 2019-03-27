@@ -2,10 +2,10 @@ import flask
 import cv2
 import numpy
 
-from flask import render_template, Response, session, jsonify
+from flask import render_template, Response, jsonify
 
 from facecatch.models import PersonInfo
-from facecatch.utils import get_feature
+from facecatch.utils import get_image_face, get_same_person
 
 
 blueprint = flask.Blueprint(__name__, __name__)
@@ -50,7 +50,7 @@ def face_mark(image):
 def image_gen(camera):
     """用于生成视频帧图片的生成器"""
     # 此全局变量用来保存用作人脸识别的帧图片
-    global IMAGE_B
+    global IMAGE_GLOBAL
     while True:
         # 捕获异常用于摄像头关闭时重新自动连接
         try:
@@ -58,7 +58,7 @@ def image_gen(camera):
         except:
             camera.video = cv2.VideoCapture(0)
             pass
-        IMAGE_B = jpeg
+        IMAGE_GLOBAL = jpeg
         if frame:
             # 使用generator函数输出视频流， 每次请求输出的content类型是image/jpeg
             yield (b'--frame\r\n'
@@ -75,20 +75,16 @@ def video_feed():
 @blueprint.route('/recognize', methods=['POST', 'GET'])
 def recognize():
     """处理帧图片人脸识别"""
-    image = IMAGE_B
-    model_id = session['model_id']
-    # 调用digits获取人脸图片的特征及相似度
-    face_feature, similarity = get_feature(image, model_id)
-    # 定义返回结果字典
+    image = IMAGE_GLOBAL
+    face_list = get_image_face(image)
     result_message = {}
-    if similarity > 40:
-        # 从基础人员库中获取人员信息
-        person = PersonInfo.query.filter(PersonInfo.face_feature == face_feature, PersonInfo.model_id == model_id).first()
-        if person:
+    if len(face_list) >= 1:
+        person, distance = get_same_person(face_list[0]['faceID'])
+        # 定义返回结果字典
+        if distance < 0.7:
             result_message['message'] = person.to_dict()
             return jsonify(result_message)
-    result_message['not_message'] = '该人员信息未知。'
-
+        result_message['not_message'] = '该人员信息未知。'
     return jsonify(result_message)
 
 

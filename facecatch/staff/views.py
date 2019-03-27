@@ -1,16 +1,32 @@
 import base64
+import json
 
 import flask
-from flask import request, render_template, redirect, url_for, flash, session
+from flask import request, render_template, redirect, url_for, flash, Response
 from flask_cas import login_required
 
 from app import db
 from facecatch.models import PersonInfo
 from facecatch.staff.forms import AddForm, UpdateForm
-from facecatch.utils import get_feature
+from facecatch.utils import get_image_face
 
 
 blueprint = flask.Blueprint(__name__, __name__)
+
+
+@blueprint.route("/inspect_image", methods=['GET', 'POST'])
+def inspect_image():
+    """ajax 校验上传图片是否符合要求"""
+
+    result_message = "success"
+    image_file = json.loads(request.get_data().decode())['image_file']
+    print(image_file)
+    # face_list = get_image_face(image_file)
+    face_list = [1, 2]
+    if len(face_list) != 1:
+        result_message = "failed"
+
+    return result_message
 
 
 @blueprint.route('/add', methods=['GET', 'POST'])
@@ -19,21 +35,18 @@ def add():
     """将录入信息处理后存储到数据库中"""
 
     add_form = AddForm()
-    model_id = session['model_id']
     if request.method == 'POST':
         image = request.files['file'].read()
-
-        face_feature, similarity = get_feature(image, model_id)
+        face_list = get_image_face(image)
+        # TODO: 此处用ajax处理上传图片不规范问题
 
         # 将录入信息存储到数据库
         person = PersonInfo(
             name=request.form['name'],
             id_card=request.form['id_card'],
             description=request.form['description'],
-            model_id=model_id,
-            face_feature=face_feature,
-            similarity=similarity,
-            image=image
+            face_id=str(face_list[0]['faceID']),
+            image=base64.b64encode(image).decode()
             )
 
         db.session.add(person)
@@ -48,9 +61,8 @@ def add():
 @login_required
 def show():
     """返回录入信息展示页面"""
-    persons = PersonInfo.query.filter(PersonInfo.model_id == session['model_id'])
-
-    return render_template('staff/show.html', persons=persons, base64=base64)
+    persons = PersonInfo.query.filter().all()
+    return render_template('staff/show.html', persons=persons, bytes=bytes)
 
 
 @blueprint.route('/detail/<person_id>', methods=['GET', 'POST'])
@@ -59,9 +71,8 @@ def detail(person_id):
     """返回录入信息详情页"""
 
     person = PersonInfo.query.filter(PersonInfo.id == person_id).first()
-    image = base64.b64encode(person.image).decode('utf-8')
 
-    return render_template('staff/detail.html', person=person, image=image)
+    return render_template('staff/detail.html', person=person, bytes=bytes)
 
 
 @blueprint.route('/delete_person/<person_id>', methods=['GET'])
@@ -94,18 +105,17 @@ def update_person(person_id):
             person.description = request.form['description']
 
         if 'file' not in request.form:
-            try:
-                image = request.files['file'].read()
-            except Exception:
-                image = None
+            image = request.files['file'].read()
 
-            person.image = image
-            face_feature, similarity = get_feature(image, session['model_id'])
-            person.face_feature = face_feature
-            person.similarity = similarity
+            person.image = base64.b64encode(image).decode()
+
+            person.face_id = str(get_image_face(image)[0]['faceID'])
 
         db.session.commit()
         flash('更新成功')
         return redirect(url_for('facecatch.staff.views.show'))
 
-    return render_template('staff/update.html', person=person, form=update_form, base64=base64)
+    return render_template('staff/update.html', person=person, form=update_form, bytes=bytes)
+
+
+
