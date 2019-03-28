@@ -4,7 +4,6 @@ import numpy
 
 from flask import render_template, Response, jsonify
 
-from facecatch.models import PersonInfo
 from facecatch.utils import get_image_face, get_same_person
 
 

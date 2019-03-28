@@ -9,12 +9,12 @@
         <h3>添加信息</h3>
             <span class="add-title-description">
                 照片要求：
-                1、图片为彩色证件照。
+                1、图片为彩色单人证件照。
                 2、证件照图片尺寸：256*256 要求正脸。
             </span>
-        <form method="post" enctype="multipart/form-data" class="face-add-form">
+        <form method="post" enctype="multipart/form-data" id="addform" class="face-add-form">
             {{ form.csrf_token }}
-            <label>
+            <label id="image">
                 <span>{{ form.file.label }}</span>{{ form.file }}
             </label>
             <label>
@@ -33,18 +33,35 @@
     <script>
         $(function(){
             $("#file").change(function(){
+                image = $(this)
+
+                imgsrc= image[0].files[0];
+                var data=new FormData()
+                data.append('image_file',imgsrc)
                 $.ajax({
-                    type:"POST",
-                    contentType:"application/json; charset=utf-8",
-                    headers:{"X-CSRFToken":'{{ csrf_token() }}'},
-                    url:"{{ url_for('facecatch.staff.views.inspect_image') }}",
-                    data:{"image_file":document.getElementById("file")},
-                    success: function (data) {
+                  type: 'post',
+                  headers: {'X-CSRFToken': '{{csrf_token()}}'},
+                  url: '{{ url_for('facecatch.staff.views.inspect_image') }}',
+                  data:data,
+                  cache:false,
+                  processData:false,
+                  contentType:false,
+                  success: function (data) {
+                     console.log(data);
                         if(data != 'success'){
-                            alert("照片不符合要求请重新选择上传。")
+                            image.val("") ;
+                            $(".img").remove();
+                            alert("照片不符合要求请重新选择上传。");
+
+                        }else{
+                           $(".img").remove();
+                           $("#image").append('<img src="" class="img" style="margin-left: 120px" width="100px">');
+                           $(".img").attr("src",URL.createObjectURL(imgsrc));
                         }
-                    }
-                });
+                  }
+                 });
+
+
             });
         })
 

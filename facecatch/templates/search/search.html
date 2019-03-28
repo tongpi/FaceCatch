@@ -11,9 +11,11 @@
         <div style="float: left">
             {{ form.csrf_token }}
             <a href="#" class="a-upload">{{ form.file }}上传文件</a>
+
             {{ form.submit(class="search_submit") }}</div>
     </form>
         <div class="match-result">
+        <span id="image"></span>
             {% if person %}
                 <h4>搜索结果</h4>
                 <ul>
@@ -29,4 +31,17 @@
                 {{ match_result }}
             {% endif %}
         </div>
+    <script>
+        $(function(){
+            $("#file").change(function(){
+               image = $(this)
+               imgsrc= image[0].files[0];
+               $(".img").remove();
+               $("#image").append('<img src="" class="img" width="100px">');
+               $(".img").attr("src",URL.createObjectURL(imgsrc));
+
+            });
+        })
+
+    </script>
 {% endblock %}
