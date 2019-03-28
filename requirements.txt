@@ -5,6 +5,7 @@ flask-wtf==0.14.2
 requests==2.21.0
 wtforms==2.2.1
 opencv-python==4.0.0.21
+numpy==1.16.2
 
 
 psycopg2==2.7.7
