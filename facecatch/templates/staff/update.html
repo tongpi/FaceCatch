@@ -6,8 +6,8 @@
 
     <form method="post" enctype="multipart/form-data" novalidate="novalidate">
         {{ form.csrf_token }}
-        图片：<img src="data:image/png;base64,{{ bytes(person.image).decode() }}" width="100px" height="100px">
-        <br>{{ form.file }}<br>
+        <div >图片：<span id="image"><img class="img" src="data:image/png;base64,{{ bytes(person.image).decode() }}" width="100px" height="100px"></span>
+        <br>{{ form.file }}</div>
         人员名称：{{ person.name }}
         <br>{{ form.name }}<br>
         证件号：{{ person.id_card }}
@@ -16,4 +16,41 @@
         <br>{{ form.description }}<br>
         {{ form.submit }}
     </form>
+    <script>
+        $(function(){
+            $("#file").change(function(){
+                image = $(this)
+
+                imgsrc= image[0].files[0];
+                var data=new FormData()
+                data.append('image_file',imgsrc)
+                $.ajax({
+                  type: 'post',
+                  headers: {'X-CSRFToken': '{{csrf_token()}}'},
+                  url: '{{ url_for('facecatch.staff.views.inspect_image') }}',
+                  data:data,
+                  cache:false,
+                  processData:false,
+                  contentType:false,
+                  success: function (data) {
+                     console.log(data);
+                        if(data != 'success'){
+                            image.val("") ;
+                            $(".img").remove();
+                            alert("照片不符合要求请重新选择上传。");
+                            window.location.reload();
+
+                        }else{
+                           $(".img").remove();
+                           $("#image").append('<img src="" class="img" width="100px">');
+                           $(".img").attr("src",URL.createObjectURL(imgsrc));
+                        }
+                  }
+                 });
+
+
+            });
+        })
+
+    </script>
 {% endblock %}

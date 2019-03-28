@@ -2,7 +2,7 @@ import base64
 import json
 
 import flask
-from flask import request, render_template, redirect, url_for, flash, Response
+from flask import request, render_template, redirect, url_for, flash
 from flask_cas import login_required
 
 from app import db
@@ -19,10 +19,9 @@ def inspect_image():
     """ajax 校验上传图片是否符合要求"""
 
     result_message = "success"
-    image_file = json.loads(request.get_data().decode())['image_file']
-    print(image_file)
-    # face_list = get_image_face(image_file)
-    face_list = [1, 2]
+    image_file = request.files['image_file']
+
+    face_list = get_image_face(image_file.read())
     if len(face_list) != 1:
         result_message = "failed"
 
