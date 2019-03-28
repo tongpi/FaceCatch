@@ -51,7 +51,8 @@ def get_face_distance(face_id1, face_id2):
     """获取两张人脸的欧式距离face_id1,face_id2 为128位的列表"""
 
     # 计算欧式距离
-    distance = numpy.sqrt(numpy.sum(numpy.square(numpy.array(face_id1, dtype=float) - numpy.array(eval(face_id2), dtype=float))))
+    distance = numpy.linalg.norm(numpy.array(face_id1, dtype=float) - numpy.array(eval(face_id2), dtype=float))
+
     return distance
 
 
