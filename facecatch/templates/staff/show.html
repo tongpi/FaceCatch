@@ -8,10 +8,12 @@
     <h3>展示页</h3>
     <br>
     <button class="face-btn"><a href="{{ url_for("facecatch.staff.views.add") }}">信息录入</a></button>
+    <button class="face-btn"><a href="{{ url_for("facecatch.staff.views.batch_add") }}">批量录入</a></button>
 
     <br>
+    <hr style="margin-top:10px;">
     {% for message in get_flashed_messages() %}
-        {{ message }}
+        <h4>{{ message }}</h4>
     {% endfor %}
     <br>
     <div class="show-body">
@@ -26,7 +28,7 @@
             </tr>
             {% for person in persons %}
             <tr>
-                <th><img src="data:image/png;base64,{{ bytes(person.image).decode() }}" width="100px"></th>
+                <th><img src="data:image/png;base64,{{ person.image }}" width="100px"></th>
                 <th><a href="{{ url_for('facecatch.staff.views.detail', person_id=person.id) }}">{{ person.name }}</a></th>
                 <th>{{ person.id_card }}</th>
                 <th>{{ person.description }}</th>

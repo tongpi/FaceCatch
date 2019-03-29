@@ -1,6 +1,9 @@
 import base64
+import tempfile
+import zipfile
 
 import numpy
+import pandas
 import requests
 import json
 
@@ -54,6 +57,51 @@ def get_face_distance(face_id1, face_id2):
     distance = numpy.linalg.norm(numpy.array(face_id1, dtype=float) - numpy.array(eval(face_id2), dtype=float))
 
     return distance
+
+
+def get_batch_info(file):
+    """
+    zip文件格式：
+        一个excel文件与一个image文件夹，
+        image文件夹里的内容为以人员证件号命名的jpg图片。
+
+    :param file: zip文件
+    :return: 返回所有人员信息的列表，列表中每个字典为每个人员的详细信息
+    """
+
+    # 打开压缩文件
+    file_zip = zipfile.ZipFile(file)
+
+    # 获取excel表对象
+    excel_file = file_zip.open('{}face.xlsx'.format(file_zip.namelist()[0]))
+
+    # 读取excel表的数据
+    excel_datas = pandas.read_excel(excel_file).values
+
+    result = []
+    for excel_data in excel_datas:
+        result_dict = dict()
+        result_dict['name'] = excel_data[0]
+        result_dict['id_card'] = excel_data[1]
+        result_dict['description'] = excel_data[2]
+        result_dict['image'] = file_zip.open('face/image/{}.png'.format(excel_data[1])).read()
+        result.append(result_dict)
+
+    file_zip.close()
+    return result
+
+
+def string_to_file(string):
+    """
+    将bytes流转为临时文件
+    """
+    file_like_obj = tempfile.NamedTemporaryFile()
+    file_like_obj.write(string)
+    # 确保string立即写入文件
+    file_like_obj.flush()
+    # 将文件读取指针返回到文件开头位置
+    file_like_obj.seek(0)
+    return file_like_obj
 
 
 # 登录装饰器

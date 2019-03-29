@@ -1,15 +1,13 @@
 import base64
-import json
-
 import flask
+
 from flask import request, render_template, redirect, url_for, flash
 from flask_cas import login_required
 
 from app import db
 from facecatch.models import PersonInfo
-from facecatch.staff.forms import AddForm, UpdateForm
-from facecatch.utils import get_image_face
-
+from facecatch.staff.forms import AddForm, UpdateForm, BatchAddForm
+from facecatch.utils import get_image_face, get_batch_info, string_to_file
 
 blueprint = flask.Blueprint(__name__, __name__)
 
@@ -37,7 +35,6 @@ def add():
     if request.method == 'POST':
         image = request.files['file'].read()
         face_list = get_image_face(image)
-        # TODO: 此处用ajax处理上传图片不规范问题
 
         # 将录入信息存储到数据库
         person = PersonInfo(
@@ -56,12 +53,49 @@ def add():
     return render_template('staff/add.html', form=add_form)
 
 
+@blueprint.route('/batch_add', methods=['GET', 'POST'])
+@login_required
+def batch_add():
+    form = BatchAddForm()
+    if request.method == 'POST':
+        file_zip = request.files['file'].read()
+        try:
+            person_list = get_batch_info(string_to_file(file_zip))
+        except:
+            flash('上传的ZIP文件不符合规范')
+            person_list = []
+
+        person_data = []
+        for person in person_list:
+            face_list = get_image_face(person['image'])
+            if len(face_list) == 1:
+                person_data.append(PersonInfo(
+                    name=person['name'],
+                    id_card=person['id_card'],
+                    description=person['description'],
+                    face_id=str(face_list[0]['faceID']),
+                    image=base64.b64encode(person['image']).decode()
+                ))
+            else:
+                flash('证件号为{}的用户照片不符合规范'.format(person['id_card']))
+
+        try:
+            db.session.add_all(person_data)
+            db.session.commit()
+        except:
+            flash('用户信息错误')
+
+        return redirect(url_for('facecatch.staff.views.show'))
+
+    return render_template('staff/batch_add.html', form=form)
+
+
 @blueprint.route('/show', methods=['GET'])
 @login_required
 def show():
     """返回录入信息展示页面"""
     persons = PersonInfo.query.filter().all()
-    return render_template('staff/show.html', persons=persons, bytes=bytes)
+    return render_template('staff/show.html', persons=persons)
 
 
 @blueprint.route('/detail/<person_id>', methods=['GET', 'POST'])
@@ -71,7 +105,7 @@ def detail(person_id):
 
     person = PersonInfo.query.filter(PersonInfo.id == person_id).first()
 
-    return render_template('staff/detail.html', person=person, bytes=bytes)
+    return render_template('staff/detail.html', person=person)
 
 
 @blueprint.route('/delete_person/<person_id>', methods=['GET'])
@@ -114,7 +148,7 @@ def update_person(person_id):
         flash('更新成功')
         return redirect(url_for('facecatch.staff.views.show'))
 
-    return render_template('staff/update.html', person=person, form=update_form, bytes=bytes)
+    return render_template('staff/update.html', person=person, form=update_form)
 
 
 
