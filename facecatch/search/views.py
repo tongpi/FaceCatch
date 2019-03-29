@@ -1,6 +1,6 @@
 import base64
-
 import flask
+
 from flask import request, render_template, session
 from flask_cas import login_required
 

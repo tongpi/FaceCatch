@@ -1,4 +1,5 @@
 import base64
+import operator
 import tempfile
 import zipfile
 
@@ -13,6 +14,17 @@ from flask import session, redirect, url_for, request
 import settings
 from .models import PersonInfo
 
+
+FACENET_EMOTION_DICT = {
+    'Angry': '愤怒',
+    'Sad': '悲伤',
+    'Neutral': '平静',
+    'Disgust': '厌烦',
+    'Surprise': '惊讶',
+    'Fear': '害怕',
+    'Happy': '开心',
+    'unknown': '未知'
+}
 
 def get_path_face(image_path):
     """根据图片获取图像中人脸及特征"""
@@ -48,6 +60,16 @@ def get_same_person(face_id):
         face_distance = get_face_distance(face_id, person.face_id)
         person_dict[face_distance] = person
     return person_dict[min(person_dict)], min(person_dict)
+
+
+def get_person_emotion(emotion):
+    '''
+    :param emotion: 返回表情的字典
+    :return: 返回一个元组的格式（表情类型：分析值）
+    '''
+
+    sort_emotion = sorted(emotion.items(), key=operator.itemgetter(1), reverse=True)[0]
+    return sort_emotion
 
 
 def get_face_distance(face_id1, face_id2):
