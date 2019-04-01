@@ -8,6 +8,8 @@ from facecatch.utils import get_image_face, get_same_person, get_person_emotion,
 
 blueprint = flask.Blueprint(__name__, __name__)
 
+IMAGE_GLOBAL = None
+
 
 class VideoCamera(object):
     def __init__(self):
@@ -73,18 +75,19 @@ def video_feed():
 @blueprint.route('/recognize', methods=['POST', 'GET'])
 def recognize():
     """处理帧图片人脸识别"""
-    image = IMAGE_GLOBAL
-    face_list = get_image_face(image)
     result_message = {}
-    if len(face_list) >= 1:
-        person, distance = get_same_person(face_list[0]['faceID'])
-        emotion = get_person_emotion(face_list[0]['emotion'])[0]
-        # 定义返回结果字典
-        if distance < 0.7:
-            result_message['message'] = person.to_dict()
-            result_message['emotion'] = FACENET_EMOTION_DICT[emotion]
-            return jsonify(result_message)
-        result_message['not_message'] = '该人员信息未知。'
+    if IMAGE_GLOBAL is not None:
+        image = IMAGE_GLOBAL
+        face_list = get_image_face(image)
+        if len(face_list) >= 1:
+            person, distance = get_same_person(face_list[0]['faceID'])
+            emotion = get_person_emotion(face_list[0]['emotion'])[0]
+            # 定义返回结果字典
+            if distance < 0.7:
+                result_message['message'] = person.to_dict()
+                result_message['emotion'] = FACENET_EMOTION_DICT[emotion]
+                return jsonify(result_message)
+    result_message['not_message'] = '该人员信息未知。'
     return jsonify(result_message)
 
 
