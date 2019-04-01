@@ -4,8 +4,7 @@ import numpy
 
 from flask import render_template, Response, jsonify
 
-from facecatch.utils import get_image_face, get_same_person
-
+from facecatch.utils import get_image_face, get_same_person, get_person_emotion, FACENET_EMOTION_DICT
 
 blueprint = flask.Blueprint(__name__, __name__)
 
@@ -79,9 +78,11 @@ def recognize():
     result_message = {}
     if len(face_list) >= 1:
         person, distance = get_same_person(face_list[0]['faceID'])
+        emotion = get_person_emotion(face_list[0]['emotion'])[0]
         # 定义返回结果字典
         if distance < 0.7:
             result_message['message'] = person.to_dict()
+            result_message['emotion'] = FACENET_EMOTION_DICT[emotion]
             return jsonify(result_message)
         result_message['not_message'] = '该人员信息未知。'
     return jsonify(result_message)

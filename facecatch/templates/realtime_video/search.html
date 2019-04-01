@@ -28,12 +28,13 @@
                   headers: {'X-CSRFToken': '{{csrf_token()}}'},
                   url: '/recognize',
                   success: function (data) {
-                      var result_html = ''
+                      var result_html = '';
                         if (data['message'] != '' && data['message'] != null){
-                            personInfo = data['message']
+                            personInfo = data['message'];
                             result_html += '<h4>识别结果：</h4><p>姓名：'+ personInfo['name'] +'</p> ' +
                                 '<p>证件号：'+ personInfo['id_card'] +'</p> ' +
-                                '<p>描述：'+ personInfo['description'] +'</p>'
+                                '<p>描述：'+ personInfo['description'] +'</p>' +
+                                '<p>表情:'+data['emotion']+'</p>'
                         }
 
                         if(data['not_message']!='' && data['not_message'] != null){

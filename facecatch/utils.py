@@ -26,6 +26,7 @@ FACENET_EMOTION_DICT = {
     'unknown': '未知'
 }
 
+
 def get_path_face(image_path):
     """根据图片获取图像中人脸及特征"""
 
@@ -63,10 +64,10 @@ def get_same_person(face_id):
 
 
 def get_person_emotion(emotion):
-    '''
+    """
     :param emotion: 返回表情的字典
     :return: 返回一个元组的格式（表情类型：分析值）
-    '''
+    """
 
     sort_emotion = sorted(emotion.items(), key=operator.itemgetter(1), reverse=True)[0]
     return sort_emotion
