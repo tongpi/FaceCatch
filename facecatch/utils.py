@@ -15,8 +15,10 @@ import settings
 from .models import PersonInfo
 
 
+BAD_EUCLIDEAN_DISTANCE = 1
+
 FACENET_EMOTION_DICT = {
-    'Angry': '愤怒',
+    'Angry': '生气',
     'Sad': '悲伤',
     'Neutral': '平静',
     'Disgust': '厌烦',
@@ -57,6 +59,8 @@ def get_same_person(face_id):
     person_list = PersonInfo.query.filter().all()
     # 用于保存对比人脸的结果key:欧式距离 value: 人信息的对象
     person_dict = {}
+    if not person_list:
+        return None, BAD_EUCLIDEAN_DISTANCE
     for person in person_list:
         face_distance = get_face_distance(face_id, person.face_id)
         person_dict[face_distance] = person
