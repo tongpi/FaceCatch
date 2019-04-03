@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <link rel="stylesheet" href="/static/css/staff.css">
+    {#<link rel="stylesheet" href="/static/css/staff.css">#}
 {% endblock %}
 
 {% block content %}
-    <div class="face-add-content">
+    {#<div class="face-add-content">
         <h3>添加信息</h3>
             <span class="add-title-description">
                 照片要求：
@@ -29,7 +29,68 @@
             <label  class="upload-file-submit">{{ form.submit }}</label>
 
         </form>
-    </div>
+    </div>#}
+
+
+
+    <content class="app-content">
+      <div class="container">
+        <div class="card pl-3 pr-3 mt-3 pb-5">
+            <div class="card-body">
+
+                <div class="clearfix pt-3 pb-3">
+                  <span class="float-left">
+                      <h5><i class="anticon icon-home"></i> 添加信息</h5>
+                  </span>
+                  <span class="float-right">照片要求：1、图片为彩色证件照。2、证件尺寸：256*256需要验证</span>
+                </div>
+
+                <hr>
+
+
+
+            <form method="post" enctype="multipart/form-data" id="addform" class="">
+                {{ form.csrf_token }}
+
+              <div class="form-group row mb-4 mt-5"  id="image">
+                <label for="inputPassword" class="col-sm-3 col-form-label text-right">{{ form.file.label }}：</label>
+                <div class="col-sm-6">
+                  {{ form.file(class='custom-file-input') }}
+                    <label class="custom-file-label ml-2 mr-2" for="customFile">选择文件</label>
+                </div>
+              </div>
+              <div class="form-group row mb-4">
+                <label for="inputPassword1" class="col-sm-3 col-form-label text-right">{{ form.name.label }}：</label>
+                <div class="col-sm-6">
+                  {{ form.name(class='form-control') }}
+                </div>
+              </div>
+              <div class="form-group row mb-4">
+                <label for="inputPassword" class="col-sm-3 col-form-label text-right">{{ form.id_card.label }}：</label>
+                <div class="col-sm-6">
+                  {{ form.id_card(class='form-control') }}
+                </div>
+              </div>
+              <div class="form-group row mb-4">
+                <label for="inputPassword" class="col-sm-3 col-form-label text-right">{{ form.description.label }}：</label>
+                <div class="col-sm-6">
+                  {{ form.description(class='form-control') }}
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-sm-3 offset-sm-4">
+                    {{ form.submit(class='btn btn-primary mr-3 px-4 ') }}
+                </div>
+              </div>
+
+            </form>
+
+            </div>
+        </div>
+      </div>
+    </content>
+
+
     <script>
         $(function(){
             $("#file").change(function(){

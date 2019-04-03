@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-    <h3>表情识别</h3>
+    {#<h3>表情识别</h3>
     <br>
     <form method="post" action="/expression" enctype="multipart/form-data">
         <div style="float: left">
@@ -23,7 +23,72 @@
                 <li>表情：{{ emotion }}</li>
             </ul>
         {% endif %}
-    </div>
+    </div>#}
+
+
+    <content class="app-content">
+      <div class="container">
+        <div class="card pl-3 pr-3 mt-3 pb-5">
+            <div class="card-body">
+                <div class="clearfix pt-3 pb-3">
+                  <span class="float-left">
+                      <h5><i class="anticon icon-home"></i> 表情识别</h5>
+                  </span>
+
+                  <span class="float-right">
+                        <form method="post" action="/expression" enctype="multipart/form-data">
+                            <div style="display: inline-block; position: relative;">
+                                {{ form.csrf_token }}
+
+                                <div class="custom-file">
+
+                                    {{ form.file(class='custom-file-input') }}
+                                  <label class="custom-file-label" for="customFile">选择文件</label>
+                                </div>
+                                <div style="position: absolute; right: 0px; top: 0px; z-index: 999;" >{{ form.submit(class="btn btn-primary pl-4 pr-4") }}</div>
+                            </div>
+                        </form>
+                  </span>
+
+                </div>
+
+                <hr>
+
+                <div class="match-result">
+                <span id="image"></span>
+                    {% if emotion %}
+                        <div class="title_box mt-4 mb-4">
+                            <h5>识别结果</h5>
+                            <span class="title_icon"></span>
+                        </div>
+                        {#<ul>
+                            <li><img src="data:image/png;base64,{{ base64.b64encode(image).decode('utf-8') }}" width="200px"></li>
+                            <li>表情：{{ emotion }}</li>
+                        </ul>#}
+
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <img src="data:image/png;base64,{{ base64.b64encode(image).decode('utf-8') }}" width="200px">
+                            </div>
+                            <div class="col-sm-8 d-flex align-items-center">
+                                表情：{{ emotion }}
+                            </div>
+                        </div>
+
+                    {% endif %}
+                </div>
+
+
+
+
+
+
+            </div>
+        </div>
+      </div>
+    </content>
+
+
     <script>
         $(function(){
             $("#file").change(function(){

@@ -1,0 +1,10 @@
+﻿.Wdate{
+	background-image:url(datePicker.png);
+  background-repeat:no-repeat;
+  background-position:right center;
+}
+.Wdate::-ms-clear{display:none;}
+
+.WdateFmtErr{
+	color:red;
+}
