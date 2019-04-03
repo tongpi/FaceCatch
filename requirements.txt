@@ -10,3 +10,10 @@ pandas==0.24.2
 
 
 psycopg2==2.7.7
+
+
+
+# test
+# SpeechRecognition==3.8.1
+# PyAudio==0.2.11
+# pywin32==224
