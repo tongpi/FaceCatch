@@ -5,34 +5,6 @@
 {% endblock %}
 
 {% block content %}
-    {#<h3>搜索页</h3>
-    <br>
-    <form method="post" action="/search" enctype="multipart/form-data">
-        <div style="float: left">
-            {{ form.csrf_token }}
-            <a href="#" class="a-upload">{{ form.file }}上传文件</a>
-
-            {{ form.submit(class="search_submit") }}</div>
-    </form>
-        <div class="match-result">
-        <span id="image"></span>
-            {% if person %}
-                <h4>搜索结果</h4>
-                <ul>
-                    <li><img src="data:image/png;base64,{{ base64.b64encode(image).decode('utf-8') }}" width="200px"></li>
-                    <li>姓名：{{ person.name }}</li>
-                    <li>证件号：{{ person.id_card }}</li>
-                    <li>描述：{{ person.description }}</li>
-                </ul>
-            {% endif %}
-            {% if match_result %}
-                <h4>搜索结果</h4>
-                <img src="data:image/png;base64,{{ base64.b64encode(image).decode('utf-8') }}" width="200px">
-                {{ match_result }}
-            {% endif %}
-        </div>#}
-
-
 
     <content class="app-content">
       <div class="container">
@@ -132,14 +104,6 @@
 
                     {% endif %}
                 </div>
-
-
-
-
-
-
-
-
 
 
 

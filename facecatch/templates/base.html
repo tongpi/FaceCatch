@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>FaceCatch</title>
-   {# <link rel="stylesheet" href="/static/css/style.css">#}
     <link rel="icon" type="image/png" href="/static/image/logo.png">
 
 
@@ -21,31 +20,13 @@
     <script src="/static/dist/js/bootstrap-table.min.js"></script>
     <script src="/static/dist/js/bootstrap-table-zh-CN.min.js"></script>
     <script src="/static/dist/js/perfect-scrollbar.min.js"></script>
-    <script src="/static/dist/js/app.min.js"></script>
+    <script src="/static/dist/js/app.js"></script>
 
 
     {% block head %}
     {% endblock %}
 </head>
 <body class="app" data-menu="layoutTop">
-    {#<div class="face-navigation">
-        <div class="face-title">
-            <a href="{{ url_for("facecatch.search.views.home") }}" class="face-title-content">人脸识别</a>
-            <button class="face-btn">
-#}{#                <a href="{{ url_for("facecatch.realtime_video.views.view_video") }}">在线识别</a>#}{#
-            </button>
-            <button class="face-btn">
-                <a href="{{ url_for("facecatch.expression.views.expression") }}">表情识别</a>
-            </button>
-            <button class="face-btn">
-                <a href="{{ url_for("facecatch.staff.views.show") }}">人员管理</a>
-            </button>
-            <div class="face-user-navigation">
-                欢迎您：<a href="#">{{ session.get('username') }}</a>！
-                <button class="face-btn"><a href="{{ url_for('facecatch.views.logout') }}">注销</a></button>
-            </div>
-        </div>
-    </div>#}
 
     <layout class="app-layout">
 
@@ -61,7 +42,7 @@
                   <a class="nav-link" href="{{ url_for("facecatch.search.views.home") }}"><i class="anticon icon-home"></i> 人脸识别</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#" ><i class="anticon icon-dashboard"></i> 在线识别</a>
+                  <a class="nav-link" href="{{ url_for("facecatch.realtime_video.views.view_video") }}" ><i class="anticon icon-dashboard"></i> 在线识别</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="{{ url_for("facecatch.expression.views.expression") }}" ><i class="anticon icon-layout"></i> 表情识别</a>
