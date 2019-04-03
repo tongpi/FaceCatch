@@ -3,18 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <title>FaceCatch</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+   {# <link rel="stylesheet" href="/static/css/style.css">#}
     <link rel="icon" type="image/png" href="/static/image/logo.png">
+
+
+    <link rel="stylesheet" href="/static/dist/theme_blue/css/app.css">
+    <link rel="stylesheet" href="/static/dist/theme_blue/css/app-extend.css">
+    <link rel="stylesheet" href="/static/css/default.css">
+
+
     <script src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
+
+
+    <script src="/static/dist/js/jquery.min.js"></script>
+    <script src="/static/dist/js/popper.min.js"></script>
+    <script src="/static/dist/js/bootstrap.min.js"></script>
+    <script src="/static/dist/js/bootstrap-table.min.js"></script>
+    <script src="/static/dist/js/bootstrap-table-zh-CN.min.js"></script>
+    <script src="/static/dist/js/perfect-scrollbar.min.js"></script>
+    <script src="/static/dist/js/app.min.js"></script>
+
+
     {% block head %}
     {% endblock %}
 </head>
-<body>
-    <div class="face-navigation">
+<body class="app" data-menu="layoutTop">
+    {#<div class="face-navigation">
         <div class="face-title">
             <a href="{{ url_for("facecatch.search.views.home") }}" class="face-title-content">人脸识别</a>
             <button class="face-btn">
-                <a href="{{ url_for("facecatch.realtime_video.views.view_video") }}">在线识别</a>
+#}{#                <a href="{{ url_for("facecatch.realtime_video.views.view_video") }}">在线识别</a>#}{#
             </button>
             <button class="face-btn">
                 <a href="{{ url_for("facecatch.expression.views.expression") }}">表情识别</a>
@@ -27,10 +45,56 @@
                 <button class="face-btn"><a href="{{ url_for('facecatch.views.logout') }}">注销</a></button>
             </div>
         </div>
-    </div>
+    </div>#}
+
+    <layout class="app-layout">
+
+        <header class="app-header">
+          <nav class="navbar navbar-expand-sm navbar-dark">
+            <a class="navbar-brand app-logo" href="#">人脸识别分析平台</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarColor01">
+              <ul class="navbar-nav header-menu">
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for("facecatch.search.views.home") }}"><i class="anticon icon-home"></i> 人脸识别</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#" ><i class="anticon icon-dashboard"></i> 在线识别</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for("facecatch.expression.views.expression") }}" ><i class="anticon icon-layout"></i> 表情识别</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="show" href="{{ url_for("facecatch.staff.views.show") }}"><i class="anticon icon-book"></i> 人员管理</a>
+                </li>
+              </ul>
+              <div class="form-inline navbar-search ml-auto">
+
+              </div>
+              <ul class="navbar-nav flex-row d-sm-flex ml-sm-3">
+
+                <li class="nav-item">
+                    <div class="nav-link-color">欢迎您：{{ session.get('username') }}！</div>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('facecatch.views.logout') }}" rel="noopener" aria-label="注销" title="注销">
+                    <i class="anticon icon-poweroff"></i>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+        </header>
+
+
+
     <div class="face-content">
     {% block content %}
     {% endblock %}
     </div>
+
+    </layout>
 </body>
 </html>

@@ -5,10 +5,10 @@
 {% endblock %}
 
 {% block content %}
-    <h3>展示页</h3>
+    {#<h3>展示页</h3>
     <br>
-    <button class="face-btn"><a href="{{ url_for("facecatch.staff.views.add") }}">信息录入</a></button>
-    <button class="face-btn"><a href="{{ url_for("facecatch.staff.views.batch_add") }}">批量录入</a></button>
+    <button class="face-btn"></button>
+    <button class="face-btn"></button>
 
     <br>
     <hr style="margin-top:10px;">
@@ -26,18 +26,237 @@
                 <th class="th-title">操作</th>
 
             </tr>
-            {% for person in persons %}
-            <tr>
-                <th><img src="data:image/png;base64,{{ person.image }}" width="100px"></th>
-                <th><a href="{{ url_for('facecatch.staff.views.detail', person_id=person.id) }}">{{ person.name }}</a></th>
-                <th>{{ person.id_card }}</th>
-                <th>{{ person.description }}</th>
-                <th>
-                    <a href="{{ url_for("facecatch.staff.views.update_person", person_id=person.id) }}">编辑</a>
-                    <a href="{{ url_for('facecatch.staff.views.delete_person', person_id=person.id) }}" onclick="if(confirm('确定要删除？')){return true;}else{return false;}">删除</a>
-                </th>
-            </tr>
-            {% endfor %}
+
         </table>
-    </div>
+    </div>#}
+
+
+<content class="app-content">
+      {#<div class="container-fluid">#}
+      <div class="container-1400 pt-3">
+
+
+        <div class="input-group w-25 mb-3">
+            <a href="{{ url_for("facecatch.staff.views.add") }}"><button type="button" class="btn btn-primary mr-3"><i class="anticon icon-form"></i> 信息录入</button></a>
+
+            <a href="{{ url_for("facecatch.staff.views.batch_add") }}"><button type="button" class="btn btn-primary"><i class="anticon icon-copy1"></i> 批量录入</button></a>
+        </div>
+
+
+
+
+
+            <div class="row">
+
+                {% for person in persons %}
+                <div class="col-6 col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <div class="clearfix">
+                              <span class="float-left">
+                                  <div class="fakeimg"><img src="data:image/png;base64,{{ person.image }}" width="126"></div>
+                              </span>
+                              <span class="float-left ml-5">
+                                  <ul class="information_box mb-0">
+                                      <li><a href="{{ url_for('facecatch.staff.views.detail', person_id=person.id) }}"><h6>{{ person.name }}</h6></a></li>
+                                      <li>证件号：{{ person.id_card }}</li>
+                                      <li>描述：{{ person.description }}</li>
+                                      <li>匹配结果：dengzihao</li>
+                                      <li>相似度：100%</li>
+                                  </ul>
+
+                                  <div class="mt-2">
+                                    <a href="{{ url_for("facecatch.staff.views.update_person", person_id=person.id) }}">
+                                        <button type="button" class="btn btn-outline-primary btn-sm pl-3 pr-3 mr-2">
+                                            <i class="anticon icon-edit"></i> 编辑
+                                        </button>
+                                    </a>
+
+                                    <a href="{{ url_for('facecatch.staff.views.delete_person', person_id=person.id) }}" onclick="if(confirm('确定要删除？')){return true;}else{return false;}">
+                                        <button type="button" class="btn btn-outline-danger btn-sm pl-3 pr-3">
+                                            <i class="anticon icon-delete"></i>  删除
+                                        </button>
+                                    </a>
+                                  </div>
+
+                              </span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+
+<!--
+                <div class="col-6 col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <div class="clearfix">
+                              <span class="float-left">
+                                  <div class="fakeimg">这边插入图像</div>
+                              </span>
+                              <span class="float-left ml-5">
+                                  <ul class="information_box mb-0">
+                                      <li>姓名：邓子豪</li>
+                                      <li>证件号：20190314001</li>
+                                      <li>描述：人脸识别邓子豪</li>
+                                      <li>匹配结果：dengzihao</li>
+                                      <li>相似度：100%</li>
+                                  </ul>
+
+                                  <div class="mt-2">
+                                    <button type="button" class="btn btn-outline-primary btn-sm pl-3 pr-3 mr-2"><i class="anticon icon-edit"></i> 编辑</button>
+                                    <button type="button" class="btn btn-outline-danger btn-sm pl-3 pr-3"><i class="anticon icon-delete"></i> 删除</button>
+                                  </div>
+
+                              </span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-6 col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <div class="clearfix">
+                              <span class="float-left">
+                                  <div class="fakeimg">这边插入图像</div>
+                              </span>
+                              <span class="float-left ml-5">
+                                  <ul class="information_box mb-0">
+                                      <li>姓名：邓子豪</li>
+                                      <li>证件号：20190314001</li>
+                                      <li>描述：人脸识别邓子豪</li>
+                                      <li>匹配结果：dengzihao</li>
+                                      <li>相似度：100%</li>
+                                  </ul>
+
+                                  <div class="mt-2">
+                                    <button type="button" class="btn btn-outline-primary btn-sm pl-3 pr-3 mr-2"><i class="anticon icon-edit"></i> 编辑</button>
+                                    <button type="button" class="btn btn-outline-danger btn-sm pl-3 pr-3"><i class="anticon icon-delete"></i> 删除</button>
+                                  </div>
+
+                              </span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="col-6 col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <div class="clearfix">
+                              <span class="float-left">
+                                  <div class="fakeimg">这边插入图像</div>
+                              </span>
+                              <span class="float-left ml-5">
+                                  <ul class="information_box mb-0">
+                                      <li>姓名：邓子豪</li>
+                                      <li>证件号：20190314001</li>
+                                      <li>描述：人脸识别邓子豪</li>
+                                      <li>匹配结果：dengzihao</li>
+                                      <li>相似度：100%</li>
+                                  </ul>
+
+                                  <div class="mt-2">
+                                    <button type="button" class="btn btn-outline-primary btn-sm pl-3 pr-3 mr-2"><i class="anticon icon-edit"></i> 编辑</button>
+                                    <button type="button" class="btn btn-outline-danger btn-sm pl-3 pr-3"><i class="anticon icon-delete"></i> 删除</button>
+                                  </div>
+
+                              </span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="col-6 col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <div class="clearfix">
+                              <span class="float-left">
+                                  <div class="fakeimg">这边插入图像</div>
+                              </span>
+                              <span class="float-left ml-5">
+                                  <ul class="information_box mb-0">
+                                      <li>姓名：邓子豪</li>
+                                      <li>证件号：20190314001</li>
+                                      <li>描述：人脸识别邓子豪</li>
+                                      <li>匹配结果：dengzihao</li>
+                                      <li>相似度：100%</li>
+                                  </ul>
+
+                                  <div class="mt-2">
+                                    <button type="button" class="btn btn-outline-primary btn-sm pl-3 pr-3 mr-2"><i class="anticon icon-edit"></i> 编辑</button>
+                                    <button type="button" class="btn btn-outline-danger btn-sm pl-3 pr-3"><i class="anticon icon-delete"></i> 删除</button>
+                                  </div>
+
+                              </span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="col-6 col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <div class="clearfix">
+                              <span class="float-left">
+                                  <div class="fakeimg">这边插入图像</div>
+                              </span>
+                              <span class="float-left ml-5">
+                                  <ul class="information_box mb-0">
+                                      <li>姓名：邓子豪</li>
+                                      <li>证件号：20190314001</li>
+                                      <li>描述：人脸识别邓子豪</li>
+                                      <li>匹配结果：dengzihao</li>
+                                      <li>相似度：100%</li>
+                                  </ul>
+
+                                  <div class="mt-2">
+                                    <button type="button" class="btn btn-outline-primary btn-sm pl-3 pr-3 mr-2"><i class="anticon icon-edit"></i> 编辑</button>
+                                    <button type="button" class="btn btn-outline-danger btn-sm pl-3 pr-3"><i class="anticon icon-delete"></i> 删除</button>
+                                  </div>
+
+                              </span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+-->
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+      </div>
+</content>
+
+
 {% endblock %}
