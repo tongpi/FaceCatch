@@ -2,6 +2,7 @@
 
 {% block content%}
 
+
     <content class="app-content">
       <div class="container">
         <div class="card pl-3 pr-3 mt-3 pb-5">
@@ -23,7 +24,8 @@
 
                         <div class="row">
                             <div class="col-sm-6">
-                                <img id="imageid" src="{{url_for('facecatch.realtime_video.views.video_feed')}}" style="width: 500px;height: 450px; background: #dddddd;">
+                                <video id="video" width="500px"  autoplay></video>
+                                <canvas id="canvas" hidden ></canvas>
                             </div>
                             <div class="col-sm-6">
                                 <div id="result_id"></div>
@@ -34,46 +36,85 @@
 
             </div>
         </div>
+
       </div>
     </content>
 
      <script>
-      $(function() {
-          setTimeout(function(){
-                setTimer();
-            },2000);
-          function setTimer(){
-              // 设置间隔7秒进行一次识别
-              setInterval(recognize, 1200000)
-          }
-        });
+
+
+        const mediaStreamConstraints = {
+          video: true,
+          audio: false,
+        };
+
+        // 用于播放视频流stream 的 video元素.
+        var video =  document.getElementById('video');
+        const localVideo = document.querySelector('video');
+
+        // Local stream that will be reproduced on the video.
+        let localStream;
+
+        // success 处理函数;  by adding the MediaStream to the video element.
+        function gotLocalMediaStream(mediaStream) {
+          localStream = mediaStream;
+          console.info(localStream);
+          console.info(localStream.getVideoTracks());
+          localVideo.srcObject = mediaStream;
+        }
+
+        // error 处理函数;  将 error 信息打印到 console.
+        function handleLocalMediaStreamError(error) {
+          console.log('navigator.getUserMedia error: ', error);
+        }
+
+        // 初始化 media stream.
+        navigator.mediaDevices.getUserMedia(mediaStreamConstraints)
+          .then(gotLocalMediaStream).catch(handleLocalMediaStreamError);
+
+
+        setInterval(function () {
+            var canvas = document.getElementById('canvas');
+            var context  = canvas.getContext('2d');
+
+            canvas.width = 500;
+            canvas.height = 380;
+
+            context.drawImage(video,0,0,680,480);
+            const data = canvas.toDataURL("image/png");
+            recognize(data)
+        }, 3000);
+
 
         // 进行识别请求
-        function recognize(){
-              $.ajax({
-                  type: 'post',
-                  contentType: "application/json; charset=UTF-8",
-                  headers: {'X-CSRFToken': '{{csrf_token()}}'},
-                  url: '/recognize',
-                  success: function (data) {
-                      var result_html = '';
-                        if (data['message'] != '' && data['message'] != null){
-                            personInfo = data['message'];
-                            result_html += '<h5>识别结果：</h5>' +
-                                '<ul><li><span class="font-weight-bold">名称：</span>'+ personInfo['name'] +'</li> ' +
-                                '<li><span class="font-weight-bold">证件号：</span>'+ personInfo['id_card'] +'</li> ' +
-                                '<li><span class="font-weight-bold">描述：</span>'+ personInfo['description'] +'</li>' +
-                                '<li><span class="font-weight-bold">表情：</span>'+ data['emotion'] +'</li></ul>'
-                        }
+        function recognize(data){
+          $.ajax({
+              type: 'post',
+              contentType: "application/json; charset=UTF-8",
+              headers: {'X-CSRFToken': '{{csrf_token()}}'},
+              url: '/recognize',
+              data: data,
+              success: function (data) {
+                  var result_html = '';
+                    if (data['message'] != '' && data['message'] != null){
+                        personInfo = data['message'];
+                        result_html += '<h5>识别结果：</h5>' +
+                            '<ul><li><span class="font-weight-bold">名称：</span>'+ personInfo['name'] +'</li> ' +
+                            '<li><span class="font-weight-bold">证件号：</span>'+ personInfo['id_card'] +'</li> ' +
+                            '<li><span class="font-weight-bold">描述：</span>'+ personInfo['description'] +'</li>' +
+                            '<li><span class="font-weight-bold">表情：</span>'+ data['emotion'] +'</li></ul>'
+                    }
 
-                        if(data['not_message']!='' && data['not_message'] != null){
-                            result_html += "<h5>识别结果：</h5><ul><li><span class=\"font-weight-bold\">"+ data['not_message'] +"</span></li></ul>"
-                        }
+                    if(data['not_message']!='' && data['not_message'] != null){
+                        result_html += "<h5>识别结果：</h5><ul><li><span class=\"font-weight-bold\">"+ data['not_message'] +"</span></li></ul>"
+                    }
 
-                      $("#result_id").empty();
-                      $("#result_id").append(result_html)
-                  }
-              });
-            }
+                  $("#result_id").empty();
+                  $("#result_id").append(result_html)
+              }
+          });
+        }
+
+
       </script>
 {% endblock %}
