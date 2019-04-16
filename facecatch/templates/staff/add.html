@@ -5,32 +5,6 @@
 {% endblock %}
 
 {% block content %}
-    {#<div class="face-add-content">
-        <h3>添加信息</h3>
-            <span class="add-title-description">
-                照片要求：
-                1、图片为彩色单人证件照。
-                2、证件照图片尺寸：256*256 要求正脸。
-            </span>
-        <form method="post" enctype="multipart/form-data" id="addform" class="face-add-form">
-            {{ form.csrf_token }}
-            <label id="image">
-                <span>{{ form.file.label }}</span>{{ form.file }}
-            </label>
-            <label>
-                <span>{{ form.name.label }}</span>{{ form.name }}
-            </label>
-            <label>
-                <span>{{ form.id_card.label }}</span>{{ form.id_card }}
-            </label>
-            <label>
-                <span>{{ form.description.label }}</span>{{ form.description }}
-            </label>
-            <label  class="upload-file-submit">{{ form.submit }}</label>
-
-        </form>
-    </div>#}
-
 
 
     <content class="app-content">
@@ -94,15 +68,15 @@
     <script>
         $(function(){
             $("#file").change(function(){
-                image = $(this)
+                image = $(this);
 
                 imgsrc= image[0].files[0];
-                var data=new FormData()
-                data.append('image_file',imgsrc)
+                var data=new FormData();
+                data.append('image_file',imgsrc);
                 $.ajax({
                   type: 'post',
                   headers: {'X-CSRFToken': '{{csrf_token()}}'},
-                  url: '{{ url_for('facecatch.staff.views.inspect_image') }}',
+                  url: '{{ url_for('staff.inspect_image') }}',
                   data:data,
                   cache:false,
                   processData:false,

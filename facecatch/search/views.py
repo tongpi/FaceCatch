@@ -10,7 +10,7 @@ from facecatch.search.forms import UploadForm
 from facecatch.utils import get_image_face, get_same_person
 
 
-blueprint = flask.Blueprint(__name__, __name__)
+blueprint = flask.Blueprint('search', __name__)
 
 
 @blueprint.route('/', methods=['GET', 'POST'])

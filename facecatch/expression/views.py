@@ -6,7 +6,7 @@ from flask import render_template, request
 from facecatch.search.forms import UploadForm
 from facecatch.utils import get_image_face, get_person_emotion, FACENET_EMOTION_DICT
 
-blueprint = flask.Blueprint(__name__, __name__)
+blueprint = flask.Blueprint('expression', __name__)
 
 
 @blueprint.route('/expression', methods=['POST', 'GET'])

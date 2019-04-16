@@ -3,7 +3,7 @@ from flask import jsonify, session, request, current_app
 from flask_cas import login_required
 from flask_cas.cas_urls import create_cas_logout_url
 
-blueprint = flask.Blueprint(__name__, __name__)
+blueprint = flask.Blueprint('facecatch', __name__)
 
 
 @blueprint.route('/logout', methods=['POST', 'GET'])

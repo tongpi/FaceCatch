@@ -39,16 +39,16 @@
             <div class="collapse navbar-collapse" id="navbarColor01">
               <ul class="navbar-nav header-menu">
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for("facecatch.search.views.home") }}"><i class="anticon icon-home"></i> 人脸识别</a>
+                  <a class="nav-link" href="{{ url_for("search.home") }}"><i class="anticon icon-home"></i> 人脸识别</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for("facecatch.realtime_video.views.view_video") }}" ><i class="anticon icon-dashboard"></i> 在线识别</a>
+                  <a class="nav-link" href="{{ url_for("realtime_video.view_video") }}" ><i class="anticon icon-dashboard"></i> 在线识别</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for("facecatch.expression.views.expression") }}" ><i class="anticon icon-layout"></i> 表情识别</a>
+                  <a class="nav-link" href="{{ url_for("expression.expression") }}" ><i class="anticon icon-layout"></i> 表情识别</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" id="show" href="{{ url_for("facecatch.staff.views.show") }}"><i class="anticon icon-book"></i> 人员管理</a>
+                  <a class="nav-link" id="show" href="{{ url_for("staff.show") }}"><i class="anticon icon-book"></i> 人员管理</a>
                 </li>
               </ul>
               <div class="form-inline navbar-search ml-auto">
@@ -60,7 +60,7 @@
                     <div class="nav-link-color">欢迎您：{{ session.get('username') }}！</div>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('facecatch.views.logout') }}" rel="noopener" aria-label="注销" title="注销">
+                  <a class="nav-link" href="{{ url_for('facecatch.logout') }}" rel="noopener" aria-label="注销" title="注销">
                     <i class="anticon icon-poweroff"></i>
                   </a>
                 </li>

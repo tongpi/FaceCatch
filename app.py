@@ -31,8 +31,8 @@ from facecatch.staff import views
 webapp.register_blueprint(views.blueprint)
 from facecatch.search import views
 webapp.register_blueprint(views.blueprint)
-from facecatch.realtime_video.views import blueprint
-webapp.register_blueprint(blueprint)
+from facecatch.realtime_video import views
+webapp.register_blueprint(views.blueprint)
 from facecatch.expression import views
 webapp.register_blueprint(views.blueprint)
 

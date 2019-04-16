@@ -5,25 +5,7 @@
 {% endblock %}
 
 {% block content %}
-    {#<h3>表情识别</h3>
-    <br>
-    <form method="post" action="/expression" enctype="multipart/form-data">
-        <div style="float: left">
-            {{ form.csrf_token }}
-            <a href="#" class="a-upload">{{ form.file }}上传照片</a>
 
-            {{ form.submit(class="search_submit") }}</div>
-    </form>
-    <div class="match-result">
-    <span id="image"></span>
-        {% if emotion %}
-            <h4>识别结果</h4>
-            <ul>
-                <li><img src="data:image/png;base64,{{ base64.b64encode(image).decode('utf-8') }}" width="200px"></li>
-                <li>表情：{{ emotion }}</li>
-            </ul>
-        {% endif %}
-    </div>#}
 
 
     <content class="app-content">
@@ -61,10 +43,6 @@
                             <h5>识别结果</h5>
                             <span class="title_icon"></span>
                         </div>
-                        {#<ul>
-                            <li><img src="data:image/png;base64,{{ base64.b64encode(image).decode('utf-8') }}" width="200px"></li>
-                            <li>表情：{{ emotion }}</li>
-                        </ul>#}
 
                         <div class="row">
                             <div class="col-sm-4">
@@ -77,11 +55,6 @@
 
                     {% endif %}
                 </div>
-
-
-
-
-
 
             </div>
         </div>

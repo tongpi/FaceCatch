@@ -9,7 +9,7 @@ from facecatch.models import PersonInfo
 from facecatch.staff.forms import AddForm, UpdateForm, BatchAddForm
 from facecatch.utils import get_image_face, get_batch_info, string_to_file
 
-blueprint = flask.Blueprint(__name__, __name__)
+blueprint = flask.Blueprint('staff', __name__)
 
 
 @blueprint.route("/inspect_image", methods=['GET', 'POST'])

@@ -41,10 +41,7 @@
                             <h5>识别结果</h5>
                             <span class="title_icon"></span>
                         </div>
-                        {#<ul>
-                            <li><img src="data:image/png;base64,{{ base64.b64encode(image).decode('utf-8') }}" width="200px"></li>
-                            <li>表情：{{ emotion }}</li>
-                        </ul>#}
+
 
                         <div class="row">
                             <div class="col-sm-4">
@@ -80,12 +77,6 @@
                                 </div>
                             </div>
                         </div>
-                        {#<ul>
-                            <li><img src="data:image/png;base64,{{ base64.b64encode(image).decode('utf-8') }}" width="200px"></li>
-                            <li>姓名：{{ person.name }}</li>
-                            <li>证件号：{{ person.id_card }}</li>
-                            <li>描述：{{ person.description }}</li>
-                        </ul>#}
                     {% endif %}
                     {% if match_result %}
                         <div class="title_box mt-4 mb-4">

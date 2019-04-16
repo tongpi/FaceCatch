@@ -1,21 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {#<h3>修改信息</h3>
-    <br>
-
-    <form method="post" enctype="multipart/form-data" novalidate="novalidate">
-        {{ form.csrf_token }}
-        <div >图片：<span id="image"><img class="img" src="data:image/png;base64,{{person.image }}" width="100px" height="100px"></span>
-        <br>{{ form.file }}</div>
-        人员名称：{{ person.name }}
-        <br>{{ form.name }}<br>
-        证件号：{{ person.id_card }}
-        <br>{{ form.id_card }}<br>
-        描述：{{ person.description }}
-        <br>{{ form.description }}<br>
-        {{ form.submit }}
-    </form>#}
 
     <content class="app-content">
       <div class="container">
@@ -87,15 +72,15 @@
     <script>
         $(function(){
             $("#file").change(function(){
-                image = $(this)
+                image = $(this);
 
                 imgsrc= image[0].files[0];
-                var data=new FormData()
-                data.append('image_file',imgsrc)
+                var data=new FormData();
+                data.append('image_file',imgsrc);
                 $.ajax({
                   type: 'post',
                   headers: {'X-CSRFToken': '{{csrf_token()}}'},
-                  url: '{{ url_for('facecatch.staff.views.inspect_image') }}',
+                  url: '{{ url_for('staff.inspect_image') }}',
                   data:data,
                   cache:false,
                   processData:false,
@@ -115,8 +100,6 @@
                         }
                   }
                  });
-
-
             });
         })
 

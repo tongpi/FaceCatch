@@ -4,7 +4,6 @@ import numpy
 
 from flask import render_template, Response, jsonify, request
 
-from facecatch.utils import get_image_face, get_same_person, get_person_emotion, FACENET_EMOTION_DICT, get_video_face
 
 blueprint = flask.Blueprint('realtime_video', __name__)
 
