@@ -1,4 +1,7 @@
-from app import db, webapp
+from flask_sqlalchemy import SQLAlchemy
+
+
+db = SQLAlchemy()
 
 
 class PersonInfo(db.Model):
@@ -22,9 +25,9 @@ class PersonInfo(db.Model):
         return d
 
 
-@webapp.before_first_request
-def create_db():
-    db.create_all()
+# @webapp.before_first_request
+# def create_db():
+#     db.create_all()
 
 
 

@@ -4,13 +4,14 @@ import flask
 from flask import request, render_template, session
 from flask_cas import login_required
 
-from app import cas
+from flask_cas import CAS
 from facecatch.models import PersonInfo
 from facecatch.search.forms import UploadForm
 from facecatch.utils import get_image_face, get_same_person
 
 
 blueprint = flask.Blueprint('search', __name__)
+cas = CAS()
 
 
 @blueprint.route('/', methods=['GET', 'POST'])

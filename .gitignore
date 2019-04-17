@@ -3,3 +3,6 @@
 
 #Intellij files
 .idea/
+
+# msn
+/msn/

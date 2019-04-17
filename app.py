@@ -39,5 +39,12 @@ webapp.register_blueprint(views.blueprint)
 CSRFProtect(webapp)
 
 
+@webapp.before_first_request
+def create_db():
+    db.create_all()
+
+
 if __name__ == '__main__':
-    webapp.run(host='recognize.lhqw.gfdx.mtn', port=5000)
+    webapp.run(host='recognize.lhqw.gfdx.mtn',
+               port=5000,
+               )

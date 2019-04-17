@@ -4,12 +4,14 @@ import flask
 from flask import request, render_template, redirect, url_for, flash
 from flask_cas import login_required
 
-from app import db
+from flask_sqlalchemy import SQLAlchemy
 from facecatch.models import PersonInfo
 from facecatch.staff.forms import AddForm, UpdateForm, BatchAddForm
 from facecatch.utils import get_image_face, get_batch_info, string_to_file
 
 blueprint = flask.Blueprint('staff', __name__)
+
+db = SQLAlchemy()
 
 
 @blueprint.route("/inspect_image", methods=['GET', 'POST'])
