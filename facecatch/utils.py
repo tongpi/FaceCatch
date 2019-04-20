@@ -39,12 +39,16 @@ def get_path_face(image_path):
     return face_list
 
 
-def get_image_face(image_file):
+def get_image_face(image_file, base=None):
     """根据图片路径获取图像中人脸及特征"""
 
     # 获取facenet 服务地址
     url = settings.FACENET_URL
-    image = base64.b64encode(image_file).decode()
+    if base:
+        image = image_file
+    else:
+        image = base64.b64encode(image_file).decode()
+
     data = {"data": [image]}
     # 发送请求调用facenet服务获取图像中包含的人脸信息
     req = requests.post(url, json=data)
