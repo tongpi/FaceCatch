@@ -4,14 +4,12 @@ import flask
 from flask import request, render_template, redirect, url_for, flash
 from flask_cas import login_required
 
-from flask_sqlalchemy import SQLAlchemy
+from facecatch.database import db
 from facecatch.models import PersonInfo
 from facecatch.staff.forms import AddForm, UpdateForm, BatchAddForm
 from facecatch.utils import get_image_face, get_batch_info, string_to_file
 
 blueprint = flask.Blueprint('staff', __name__)
-
-db = SQLAlchemy()
 
 
 @blueprint.route("/inspect_image", methods=['GET', 'POST'])
@@ -50,7 +48,7 @@ def add():
         db.session.add(person)
         db.session.commit()
 
-        return redirect(url_for('facecatch.staff.views.show'))
+        return redirect(url_for('staff.show'))
 
     return render_template('staff/add.html', form=add_form)
 
@@ -87,7 +85,7 @@ def batch_add():
         except:
             flash('用户信息错误')
 
-        return redirect(url_for('facecatch.staff.views.show'))
+        return redirect(url_for('staff.show'))
 
     return render_template('staff/batch_add.html', form=form)
 
@@ -119,7 +117,7 @@ def delete_person(person_id):
     db.session.delete(person)
     db.session.commit()
 
-    return redirect(url_for("facecatch.staff.views.show"))
+    return redirect(url_for("staff.show"))
 
 
 @blueprint.route('/update_person/<person_id>', methods=['GET', 'POST'])
@@ -148,7 +146,7 @@ def update_person(person_id):
 
         db.session.commit()
         flash('更新成功')
-        return redirect(url_for('facecatch.staff.views.show'))
+        return redirect(url_for('staff.show'))
 
     return render_template('staff/update.html', person=person, form=update_form)
 

@@ -2,9 +2,9 @@ import ssl
 
 from flask import Flask
 from flask_wtf.csrf import CSRFProtect
-from flask_sqlalchemy import SQLAlchemy
 from flask_cas import CAS
 
+from facecatch.database import db
 import settings
 
 
@@ -23,7 +23,8 @@ webapp.config['CAS_AFTER_LOGOUT'] = settings.CAS_AFTER_LOGOUT
 webapp.config['SECRET_KEY'] = settings.FLASK_SECRET_KEY
 webapp.config['SQLALCHEMY_DATABASE_URI'] = settings.SQLALCHEMY_DATABASE_URI
 webapp.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = settings.SQLALCHEMY_TRACK_MODIFICATIONS
-db = SQLAlchemy(webapp)
+db.init_app(webapp)
+
 
 from facecatch import views
 webapp.register_blueprint(views.blueprint)
@@ -39,12 +40,10 @@ webapp.register_blueprint(views.blueprint)
 CSRFProtect(webapp)
 
 
-@webapp.before_first_request
-def create_db():
-    db.create_all()
-
-
 if __name__ == '__main__':
     webapp.run(host='recognize.lhqw.gfdx.mtn',
                port=5000,
+               ssl_context=(
+                    r"C:\Users\dengzihao\Desktop\server\cert.pem",
+                    r"C:\Users\dengzihao\Desktop\server\key.pem")
                )

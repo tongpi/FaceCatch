@@ -3,6 +3,11 @@
     padding: 0;
 }
 
+body{
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
 .container-1400{
     width:1400px;
     margin:0px auto;

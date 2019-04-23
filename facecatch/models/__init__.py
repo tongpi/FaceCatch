@@ -1,7 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
-
-
-db = SQLAlchemy()
+from facecatch.database import db
 
 
 class PersonInfo(db.Model):
