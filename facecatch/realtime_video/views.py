@@ -13,7 +13,6 @@ def recognize():
     result_message = {}
     video_image = request.get_data()
     image = str(video_image, 'utf-8').split(',')[1]
-    print(image)
     face_list = get_image_face(image, 'base64')
     if len(face_list) >= 1:
         person, distance = get_same_person(face_list[0]['faceID'])
