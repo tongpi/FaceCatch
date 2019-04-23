@@ -4,7 +4,7 @@
 import os
 
 
-FACECATCH_URL = "http://recognize.lhqw.gfdx.mtn:5000/"
+FACECATCH_URL = "https://recognize.lhqw.gfdx.mtn:5000/"
 
 
 FLASK_SECRET_KEY = 'face_catch'

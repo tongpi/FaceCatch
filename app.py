@@ -44,6 +44,6 @@ if __name__ == '__main__':
     webapp.run(host='recognize.lhqw.gfdx.mtn',
                port=5000,
                ssl_context=(
-                    r"C:\Users\dengzihao\Desktop\server\cert.pem",
-                    r"C:\Users\dengzihao\Desktop\server\key.pem")
+                    "local_ssl/cert.pem",
+                    "local_ssl/key.pem")
                )

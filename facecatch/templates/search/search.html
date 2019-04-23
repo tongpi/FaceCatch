@@ -51,7 +51,6 @@
                                 表情：{{ emotion }}
                             </div>
                         </div>
-
                     {% endif %}
                 </div>
 
@@ -92,11 +91,14 @@
                                 {{ match_result }}
                             </div>
                         </div>
-
                     {% endif %}
                 </div>
 
-
+                {% if not emotion and  not person and not match_result %}
+                    <div>
+                        <h3>请上传照片进行搜索！</h3>
+                    </div>
+                {% endif %}
 
             </div>
         </div>
