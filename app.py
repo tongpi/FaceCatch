@@ -26,6 +26,11 @@ webapp.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = settings.SQLALCHEMY_TRACK_MODI
 db.init_app(webapp)
 
 
+@webapp.before_first_request
+def create_db():
+    db.create_all()
+
+
 from facecatch import views
 webapp.register_blueprint(views.blueprint)
 from facecatch.staff import views
@@ -41,7 +46,7 @@ CSRFProtect(webapp)
 
 
 if __name__ == '__main__':
-    webapp.run(host='recognize.lhqw.gfdx.mtn',
+    webapp.run(host='0.0.0.0',
                port=5000,
                ssl_context=(
                     "local_ssl/cert.pem",

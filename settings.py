@@ -4,12 +4,12 @@
 import os
 
 
-FACECATCH_URL = "https://recognize.lhqw.gfdx.mtn:5000/"
+FACECATCH_URL = "https://recognize.lhqw.gfdx.mtn:4231/"
 
 
 FLASK_SECRET_KEY = 'face_catch'
 
-SQLALCHEMY_DATABASE_URI = os.environ.get("FACECATCH_DATABASE_URL", "postgresql://postgres@192.168.1.143/face")
+SQLALCHEMY_DATABASE_URI = os.environ.get("FACECATCH_DATABASE_URL", "postgresql://postgres@facecatch.data.address/face")
 SQLALCHEMY_TRACK_MODIFICATIONS = os.environ.get("SQLALCHEMY_TRACK_MODIFICATIONS", False)
 
 # DIGITS地址的配置

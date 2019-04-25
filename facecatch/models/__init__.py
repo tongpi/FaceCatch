@@ -22,9 +22,7 @@ class PersonInfo(db.Model):
         return d
 
 
-# @webapp.before_first_request
-# def create_db():
-#     db.create_all()
+
 
 
 

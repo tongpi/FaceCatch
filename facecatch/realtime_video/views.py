@@ -1,6 +1,7 @@
 import flask
 
 from flask import render_template, jsonify, request
+from flask_cas import login_required
 
 from facecatch.utils import get_same_person, get_person_emotion, FACENET_EMOTION_DICT, get_image_face
 
@@ -8,6 +9,7 @@ blueprint = flask.Blueprint('realtime_video', __name__)
 
 
 @blueprint.route('/recognize', methods=['POST', 'GET'])
+@login_required
 def recognize():
     """处理帧图片人脸识别"""
     result_message = {}
@@ -28,6 +30,7 @@ def recognize():
 
 
 @blueprint.route('/view_video')
+@login_required
 def view_video():
     """在线识别跳转"""
     return render_template('realtime_video/search.html')
