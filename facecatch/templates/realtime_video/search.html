@@ -58,8 +58,6 @@
         // success 处理函数;  by adding the MediaStream to the video element.
         function gotLocalMediaStream(mediaStream) {
           localStream = mediaStream;
-          console.info(localStream);
-          console.info(localStream.getVideoTracks());
           localVideo.srcObject = mediaStream;
         }
 

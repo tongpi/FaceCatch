@@ -94,7 +94,7 @@ def get_batch_info(file):
     """
     zip文件格式：
         一个excel文件与一个image文件夹，
-        image文件夹里的内容为以人员证件号命名的jpg图片。
+        image文件夹里的内容为以人员证件号命名的png/jpg图片。
 
     :param file: zip文件
     :return: 返回所有人员信息的列表，列表中每个字典为每个人员的详细信息
@@ -115,7 +115,10 @@ def get_batch_info(file):
         result_dict['name'] = excel_data[0]
         result_dict['id_card'] = excel_data[1]
         result_dict['description'] = excel_data[2]
-        result_dict['image'] = file_zip.open('face/image/{}.png'.format(excel_data[1])).read()
+        try:
+            result_dict['image'] = file_zip.open('face/image/{}.png'.format(excel_data[1])).read()
+        except KeyError:
+            result_dict['image'] = file_zip.open('face/image/{}.jpg'.format(excel_data[1])).read()
         result.append(result_dict)
 
     file_zip.close()
