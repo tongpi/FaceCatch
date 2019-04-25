@@ -4,7 +4,7 @@ flask-sqlalchemy==2.3.2
 flask-wtf==0.14.2
 requests==2.21.0
 wtforms==2.2.1
-opencv-python==4.0.0.21
+# opencv-python==4.0.0.21
 numpy==1.16.2
 pandas==0.24.2
 uwsgi==2.0.18
