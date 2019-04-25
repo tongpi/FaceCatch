@@ -8,7 +8,7 @@ wtforms==2.2.1
 numpy==1.16.2
 pandas==0.24.2
 uwsgi==2.0.18
-
+xlrd==1.2.0
 psycopg2==2.7.7
 
 
