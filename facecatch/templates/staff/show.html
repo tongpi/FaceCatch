@@ -5,34 +5,9 @@
 {% endblock %}
 
 {% block content %}
-    {#<h3>展示页</h3>
-    <br>
-    <button class="face-btn"></button>
-    <button class="face-btn"></button>
-
-    <br>
-    <hr style="margin-top:10px;">
-    {% for message in get_flashed_messages() %}
-        <h4>{{ message }}</h4>
-    {% endfor %}
-    <br>
-    <div class="show-body">
-        <table>
-            <tr>
-                <th class="th-title">图片</th>
-                <th class="th-title">姓名</th>
-                <th class="th-title">证件号</th>
-                <th class="th-title">描述</th>
-                <th class="th-title">操作</th>
-
-            </tr>
-
-        </table>
-    </div>#}
 
 
 <content class="app-content">
-      {#<div class="container-fluid">#}
       <div class="container-1400 pt-3">
 
 
@@ -42,9 +17,9 @@
             <a href="{{ url_for("staff.batch_add") }}"><button type="button" class="btn btn-primary"><i class="anticon icon-copy1"></i> 批量录入</button></a>
         </div>
 
-
-
-
+        {% for message in get_flashed_messages() %}
+            <h4>{{ message }}</h4>
+        {% endfor %}
 
             <div class="row">
 

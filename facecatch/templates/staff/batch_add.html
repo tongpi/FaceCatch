@@ -15,11 +15,12 @@
                 <div class="pt-3 pb-3">
                     <h5><i class="anticon icon-home"></i> 批量添加信息</h5>
                     <p class="mt-3">照片要求：1、zip文件格式：一个excel文件与一个image文件夹，image文件夹里的内容为以人员证件号命名的jpg图片。2、证件照图片尺寸：256*256 要求正脸。</p>
-                    <hr></hr>
+                    <hr/>
                 </div>
 
                 <form method="post" enctype="multipart/form-data" id="addform" class="">
-
+                    {{ form.csrf_token }}
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                     <div class="form-group row mb-4 mt-5"  id="image">
                         <label for="inputPassword" class="col-sm-3 col-form-label text-right">{{ form.file.label }}：</label>
                         <div class="col-sm-6">
