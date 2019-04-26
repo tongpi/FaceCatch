@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="/static/css/search.css">
+{% endblock %}
+
+{% block content %}
+
+    <content class="app-content">
+      <div class="container">
+        <div class="card pl-3 pr-3 mt-3 pb-5">
+            <div class="card-body">
+                <div class="clearfix pt-3 pb-3">
+                  <span class="float-left">
+                      <h5><i class="anticon icon-home"></i> DIGITS搜索页</h5>
+                  </span>
+
+                  <span class="float-right">
+                        <form method="post" action="/digits_search" enctype="multipart/form-data">
+                            <div style="display: inline-block; position: relative;">
+                                {{ form.csrf_token }}
+
+                                <div class="custom-file">
+
+                                    {{ form.file(class='custom-file-input') }}
+                                  <label class="custom-file-label" for="customFile">选择文件</label>
+                                </div>
+                                <div style="position: absolute; right: 0px; top: 0px; z-index: 999;" >{{ form.submit(class="btn btn-primary pl-4 pr-4") }}</div>
+                            </div>
+                        </form>
+                  </span>
+
+                </div>
+
+                <hr>
+
+
+                <div class="match-result">
+                <span id="image"></span>
+                    {% if predictions %}
+                        <div class="title_box mt-4 mb-4">
+                            <h5>识别结果</h5>
+                            <span class="title_icon"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <img src="data:image/png;base64,{{ base64.b64encode(image).decode('utf-8') }}" width="200px">
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="search_Result">
+                                    <ul>
+                                        {% for prediction in predictions %}
+                                        <li>
+                                            <span class="font-weight-bold">名称：{{ prediction[0] }} </span>&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <span class="font-weight-bold">预测值：{{ prediction[1] }}%</span>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if match_result %}
+                        <div class="title_box mt-4 mb-4">
+                            <h5>搜索结果</h5>
+                            <span class="title_icon"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <img src="data:image/png;base64,{{ base64.b64encode(image).decode('utf-8') }}" width="200px">
+                            </div>
+                            <div class="col-sm-8 d-flex align-items-center">
+                                {{ match_result }}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                {% if not emotion and  not predictions and not match_result %}
+                    <div>
+                        <h3>请上传照片进行搜索！</h3>
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+      </div>
+    </content>
+
+
+
+    <script>
+        $(function(){
+            $("#file").change(function(){
+               image = $(this);
+               imgsrc= image[0].files[0];
+               $(".img").remove();
+               $("#image").append('<img src="" class="img" width="100px">');
+               $(".img").attr("src",URL.createObjectURL(imgsrc));
+
+            });
+        })
+
+    </script>
+{% endblock %}

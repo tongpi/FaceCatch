@@ -41,6 +41,8 @@ from facecatch.realtime_video import views
 webapp.register_blueprint(views.blueprint)
 from facecatch.expression import views
 webapp.register_blueprint(views.blueprint)
+from facecatch.digits_search import views
+webapp.register_blueprint(views.blueprint)
 
 CSRFProtect(webapp)
 
