@@ -24,7 +24,7 @@
             <div class="row">
 
                 {% for person in persons %}
-                <div class="col-6 col-md-4 mb-3">
+                <div class="col-6 col-md-4 mb-3" id="person{{ person.id }}">
                     <div class="card">
                         <div class="card-body">
 
@@ -48,7 +48,7 @@
                                         </button>
                                     </a>
 
-                                    <a href="{{ url_for('staff.delete_person', person_id=person.id) }}" onclick="if(confirm('确定要删除？')){return true;}else{return false;}">
+                                    <a onclick="if(confirm('确定要删除？')){deletePerson({{ person.id }})}else{return false;}">
                                         <button type="button" class="btn btn-outline-danger btn-sm pl-3 pr-3">
                                             <i class="anticon icon-delete"></i>  删除
                                         </button>
@@ -67,5 +67,23 @@
       </div>
 </content>
 
+    <script>
+        function deletePerson(person_id) {
+            $.ajax({
+                type: 'post',
+                contentType: "application/json; charset=UTF-8",
+                headers: {'X-CSRFToken': '{{csrf_token()}}'},
+                url: '/delete_person',
+                data: {
+                    person_id,
+                },
+                success: function (data) {
+                    if (data = "success") {
+                        $("#person" + person_id).html('');
+                    }
+                }
+            })
+        }
+    </script>
 
 {% endblock %}

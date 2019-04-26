@@ -1,4 +1,5 @@
 import base64
+
 import flask
 
 from flask import request, render_template, redirect, url_for, flash
@@ -108,16 +109,17 @@ def detail(person_id):
     return render_template('staff/detail.html', person=person)
 
 
-@blueprint.route('/delete_person/<person_id>', methods=['GET'])
+@blueprint.route('/delete_person', methods=['POST'])
 @login_required
-def delete_person(person_id):
+def delete_person():
     """删除指定人员信息"""
-
-    person = PersonInfo.query.filter(PersonInfo.id == person_id).first()
+    data = request.get_data().decode()
+    person_id = data.split('=')[1]
+    person = PersonInfo.query.filter(PersonInfo.id == int(person_id)).first()
     db.session.delete(person)
     db.session.commit()
 
-    return redirect(url_for("staff.show"))
+    return "success"
 
 
 @blueprint.route('/update_person/<person_id>', methods=['GET', 'POST'])
