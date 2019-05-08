@@ -1,0 +1,12 @@
+version: "3"
+services:
+
+  server:
+    image: face_catch:latest
+    volumes:
+      - .:/var/www/
+    ports:
+      - "50666:5000"
+    environment:
+      FACECATCH_DATABASE_URL: "postgresql:///"
+    restart: always
