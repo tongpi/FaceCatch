@@ -2,7 +2,7 @@ version: "3"
 services:
 
   server:
-    image: face_catch:latest
+    image: gds/facecatch:latest
     volumes:
       - .:/var/www/
     ports:
