@@ -2,7 +2,7 @@ import base64
 
 import flask
 
-from flask import request, render_template, redirect, url_for, flash
+from flask import request, render_template, redirect, url_for, flash, app, make_response, send_from_directory
 from flask_cas import login_required
 
 from facecatch.database import db
@@ -153,4 +153,10 @@ def update_person(person_id):
     return render_template('staff/update.html', person=person, form=update_form)
 
 
+@blueprint.route('/download_file', methods=['GET', 'POST'])
+@login_required
+def download_file():
+    response = make_response(send_from_directory('facecatch/static/sample_file', filename='face.zip', as_attachment=True))
+    response.headers["Content-Disposition"] = "attachment; filename={}".format('face.zip'.encode().decode('latin-1'))
+    return response
 
