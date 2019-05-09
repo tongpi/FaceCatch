@@ -4,10 +4,10 @@ RUN mkdir /var/www
 
 WORKDIR /var/www
 
-COPY requirements.txt ./
+COPY . ./
 
 RUN pip install --no-cache-dir -r requirements.txt -i https://pypi.doubanio.com/simple
 
-WORKDIR /var/www
+WORKDIR /var/www/
 
-CMD ["uwsgi","--ini","/var/www/uwsgi.ini"]
+CMD ["python","-m","app"]
