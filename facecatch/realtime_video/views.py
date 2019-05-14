@@ -16,11 +16,11 @@ def recognize():
     video_image = request.get_data()
     image = str(video_image, 'utf-8').split(',')[1]
     face_list = get_image_face(image, 'base64')
-    if len(face_list) >= 1:
+    if face_list:
         person, distance = get_same_person(face_list[0]['faceID'])
         emotion = get_person_emotion(face_list[0]['emotion'])[0]
         # 定义返回结果字典
-        if distance < 0.7:
+        if distance < 0.9:
             result_message['message'] = person.to_dict()
             result_message['emotion'] = FACENET_EMOTION_DICT[emotion]
             return jsonify(result_message)

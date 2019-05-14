@@ -15,7 +15,7 @@ def expression():
     if request.method == 'POST':
         upload_file = request.files['file'].read()
         face_list = get_image_face(upload_file)
-        if len(face_list) >= 1:
+        if face_list:
             emotion = get_person_emotion(face_list[0]['emotion'])[0]
         else:
             emotion = 'unknown'

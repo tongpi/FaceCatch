@@ -24,7 +24,6 @@
 
                 <form method="post" enctype="multipart/form-data" id="addform" class="">
                     {{ form.csrf_token }}
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                     <div class="form-group row mb-4 mt-5"  id="image">
                         <label for="inputPassword" class="col-sm-3 col-form-label text-right">{{ form.file.label }}：</label>
                         <div class="col-sm-6">

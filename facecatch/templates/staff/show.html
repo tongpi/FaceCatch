@@ -70,7 +70,6 @@
             $.ajax({
                 type: 'post',
                 contentType: "application/json; charset=UTF-8",
-                headers: {'X-CSRFToken': '{{csrf_token()}}'},
                 url: '/delete_person',
                 data: {
                     person_id,

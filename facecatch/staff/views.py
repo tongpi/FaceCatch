@@ -2,7 +2,7 @@ import base64
 
 import flask
 
-from flask import request, render_template, redirect, url_for, flash, app, make_response, send_from_directory
+from flask import request, render_template, redirect, url_for, flash, make_response, send_from_directory
 from flask_cas import login_required
 
 from facecatch.database import db

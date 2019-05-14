@@ -79,7 +79,6 @@
                 data.append('image_file',imgsrc);
                 $.ajax({
                   type: 'post',
-                  headers: {'X-CSRFToken': '{{csrf_token()}}'},
                   url: '{{ url_for('staff.inspect_image') }}',
                   data:data,
                   cache:false,
