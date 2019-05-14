@@ -8,7 +8,7 @@ from flask_cas import login_required
 from facecatch.database import db
 from facecatch.models import PersonInfo
 from facecatch.staff.forms import AddForm, UpdateForm, BatchAddForm
-from facecatch.utils import get_image_face, get_batch_info, string_to_file
+from facecatch.utils import get_image_face, get_batch_info, string_to_file, get_create_time
 
 blueprint = flask.Blueprint('staff', __name__)
 
@@ -40,10 +40,12 @@ def add():
         # 将录入信息存储到数据库
         person = PersonInfo(
             name=request.form['name'],
+            department=request.form['department'],
             id_card=request.form['id_card'],
             description=request.form['description'],
             face_id=str(face_list[0]['faceID']),
-            image=base64.b64encode(image).decode()
+            image=base64.b64encode(image).decode(),
+            create_time=get_create_time(),
             )
 
         db.session.add(person)
@@ -72,10 +74,12 @@ def batch_add():
             if len(face_list) == 1:
                 person_data.append(PersonInfo(
                     name=person['name'],
+                    department=person['department'],
                     id_card=person['id_card'],
                     description=person['description'],
                     face_id=str(face_list[0]['faceID']),
-                    image=base64.b64encode(person['image']).decode()
+                    image=base64.b64encode(person['image']).decode(),
+                    create_time=get_create_time(),
                 ))
             else:
                 flash('证件号为{}的用户照片不符合规范'.format(person['id_card']))
@@ -138,6 +142,8 @@ def update_person(person_id):
             person.id_card = request.form['id_card']
         if request.form['description']:
             person.description = request.form['description']
+        if request.form['department']:
+            person.department = request.form['department']
 
         if 'file' not in request.form:
             image = request.files['file'].read()

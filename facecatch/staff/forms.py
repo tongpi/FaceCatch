@@ -10,6 +10,7 @@ class AddForm(FlaskForm):
     file = FileField("上传照片", validators=[DataRequired()])
     name = StringField("姓名")
     id_card = StringField("证件号")
+    department = StringField("部门")
     description = StringField("描述")
     submit = SubmitField("提交")
 
@@ -21,6 +22,7 @@ class UpdateForm(FlaskForm):
     file = FileField("上传照片", default='')
     name = StringField("姓名")
     id_card = StringField("证件号")
+    department = StringField("部门")
     description = StringField("描述")
     submit = SubmitField("提交修改")
 

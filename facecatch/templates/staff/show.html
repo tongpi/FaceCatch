@@ -30,13 +30,19 @@
 
                             <div class="clearfix">
                               <span class="float-left">
-                                  <div class="fakeimg"><img src="data:image/png;base64,{{ person.image }}" width="126"></div>
+                                  <div class="fakeimg">
+                                      <a href="{{ url_for('staff.detail', person_id=person.id) }}">
+                                          <img src="data:image/png;base64,{{ person.image }}" width="126">
+                                      </a>
+                                  </div>
                               </span>
                               <span class="float-left ml-5">
                                   <ul class="information_box mb-0">
                                       <li><a href="{{ url_for('staff.detail', person_id=person.id) }}"><h6>{{ person.name }}</h6></a></li>
+                                      <li>部门：{{ person.department }}</li>
                                       <li>证件号：{{ person.id_card }}</li>
                                       <li>描述：{{ person.description }}</li>
+                                      <li>创建时间：{{ person.create_time }}</li>
                                   </ul>
 
                                   <div class="mt-2">
