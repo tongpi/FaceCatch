@@ -2,6 +2,7 @@ flask==1.0.2
 flask-cas==1.0.0
 flask-sqlalchemy==2.3.2
 flask-wtf==0.14.2
+flask-restful==0.3.7
 requests==2.21.0
 wtforms==2.2.1
 # opencv-python==4.0.0.21
@@ -10,8 +11,9 @@ pandas==0.24.2
 uwsgi==2.0.18
 xlrd==1.2.0
 psycopg2==2.7.7
+apscheduler==3.6.0
 
-
+# piexif==1.1.2
 
 # test
 # SpeechRecognition==3.8.1

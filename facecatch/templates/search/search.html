@@ -95,8 +95,10 @@
                         </div>
                     {% endif %}
                 </div>
-
-                {% if not emotion and  not person and not match_result %}
+                {% for message in get_flashed_messages() %}
+                    <h4>{{ message }}</h4>
+                {% endfor %}
+                {% if not get_flashed_messages() and not emotion and  not person and not match_result %}
                     <div>
                         <h3>请上传照片进行搜索！</h3>
                     </div>

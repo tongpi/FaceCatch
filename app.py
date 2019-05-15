@@ -1,12 +1,14 @@
 import ssl
 
 from flask import Flask
-from flask_wtf.csrf import CSRFProtect
 from flask_cas import CAS
+from flask_restful import Api
 
 from facecatch.database import db
 import settings
-
+from apscheduler.schedulers.background import BackgroundScheduler
+from facecatch.utils import pretreatment_image
+from facecatch.search.views import ImageList
 
 webapp = Flask(__name__, template_folder="facecatch/templates", static_folder="facecatch/static")
 cas = CAS(webapp)
@@ -24,6 +26,15 @@ webapp.config['SECRET_KEY'] = settings.FLASK_SECRET_KEY
 webapp.config['SQLALCHEMY_DATABASE_URI'] = settings.SQLALCHEMY_DATABASE_URI
 webapp.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = settings.SQLALCHEMY_TRACK_MODIFICATIONS
 db.init_app(webapp)
+
+api = Api(webapp)
+api.add_resource(ImageList, '/api/images')
+
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(pretreatment_image, "cron", hour=14, minute=50, args=[webapp])
+# scheduler.add_job(pretreatment_image, "interval", minutes=2, args=[webapp])
+scheduler.start()
 
 
 @webapp.before_first_request
@@ -43,8 +54,6 @@ from facecatch.expression import views
 webapp.register_blueprint(views.blueprint)
 from facecatch.digits_search import views
 webapp.register_blueprint(views.blueprint)
-
-CSRFProtect(webapp)
 
 
 if __name__ == '__main__':

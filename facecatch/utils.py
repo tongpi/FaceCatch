@@ -1,8 +1,11 @@
 import base64
+import datetime
 import operator
+import os
 import tempfile
+import time
 import zipfile
-
+import glob
 import numpy
 import pandas
 import requests
@@ -12,8 +15,8 @@ from functools import wraps
 from flask import session, redirect, url_for, request
 
 import settings
-from .models import PersonInfo
-
+from facecatch.database import db
+from .models import PersonInfo, ImageInfo
 
 BAD_EUCLIDEAN_DISTANCE = 1
 
@@ -27,16 +30,6 @@ FACENET_EMOTION_DICT = {
     'Happy': '开心',
     'unknown': '未知'
 }
-
-
-def get_path_face(image_path):
-    """根据图片获取图像中人脸及特征"""
-
-    url = settings.FACENET_URL
-    data = {"data":image_path}
-    req = requests.post(url, json=data)
-    face_list = json.loads(req.content.decode('utf-8'))['data']
-    return face_list
 
 
 def get_image_face(image_file, base=None):
@@ -53,7 +46,9 @@ def get_image_face(image_file, base=None):
     # 发送请求调用facenet服务获取图像中包含的人脸信息
     req = requests.post(url, json=data)
     face_list = json.loads(req.content.decode('utf-8'))['data']
-    return face_list
+    if face_list:
+        return face_list
+    return None
 
 
 def get_same_person(face_id):
@@ -113,12 +108,13 @@ def get_batch_info(file):
     for excel_data in excel_datas:
         result_dict = dict()
         result_dict['name'] = excel_data[0]
-        result_dict['id_card'] = excel_data[1]
-        result_dict['description'] = excel_data[2]
+        result_dict['department'] = excel_data[1]
+        result_dict['id_card'] = excel_data[2]
+        result_dict['description'] = excel_data[3]
         try:
-            result_dict['image'] = file_zip.open('face/image/{}.png'.format(excel_data[1])).read()
+            result_dict['image'] = file_zip.open('face/image/{}.png'.format(excel_data[2])).read()
         except KeyError:
-            result_dict['image'] = file_zip.open('face/image/{}.jpg'.format(excel_data[1])).read()
+            result_dict['image'] = file_zip.open('face/image/{}.jpg'.format(excel_data[2])).read()
         result.append(result_dict)
 
     file_zip.close()
@@ -148,6 +144,93 @@ def login_required(func):
             return redirect(url_for('center.views.login', next=request.url))
 
     return wrapper
+
+
+def get_file_create_time(file):
+    """获取文件创建时间"""
+    return str(os.path.getctime(file))
+
+
+def get_create_time():
+    return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+
+
+# 预处理图片,存入数据库中
+def pretreatment_image(app):
+    with app.app_context():
+        try:
+            # 获取预处理图片表中最大的创建时间，用于筛选处理图片范围
+            max_create_time = ImageInfo.query.order_by(db.desc("create_time")).first().create_time
+        except AttributeError:
+            max_create_time = None
+        image_path = settings.PRETREATMENT_IMAGE_PATH
+        if image_path:
+            jpg_path = glob.glob(image_path + "/*.jpg")
+            png_path = glob.glob(image_path + "/*.png")
+            # 获取所有图片的路径
+            file_list = jpg_path + png_path
+            for file in file_list:
+                # 获取文件创建时间
+                file_create_time = get_file_create_time(file)
+                if max_create_time and file_create_time <= max_create_time:
+                    continue
+                with open(file, 'rb') as f:
+                    file_b64 = base64.b64encode(f.read()).decode("utf-8")
+                    face_list = get_image_face(file_b64, "true")
+                    if face_list:
+                        face_id = face_list[0]['faceID']
+                        person, distance = get_same_person(face_id)
+                        if distance < 0.9:
+                            image_info = ImageInfo(
+                                label=person.name,
+                                create_time=file_create_time,
+                                image_path=file,
+                            )
+                            db.session.add(image_info)
+                            db.session.commit()
+    print("执行完毕，时间： " + datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3])
+    return None
+# def pretreatment_image(app):
+#     with app.app_context():
+#         image_path = settings.PRETREATMENT_IMAGE_PATH
+#         if image_path:
+#             jpg_path = glob.glob(image_path + "/*.jpg")
+#             png_path = glob.glob(image_path + "/*.png")
+#             file_list = jpg_path + png_path
+#             for file in file_list:
+#                 with open(file, 'rb') as f:
+#                     file_b64 = base64.b64encode(f.read()).decode("utf-8")
+#                     face_list = get_image_face(file_b64, "true")
+#                     if face_list:
+#                         face_id = face_list[0]['faceID']
+#                         image_info = ImageInfo(
+#                             face_id=str(face_id),
+#                             image=file_b64
+#                         )
+#                         db.session.add(image_info)
+#                         db.session.commit()
+#                 os.remove(file)
+#     print("执行完毕，时间： " + datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3])
+
+
+def get_same_image(label):
+    image_info_list = ImageInfo.query.filter(ImageInfo.label == label).all()
+
+    image_list = []
+    for image_info in image_info_list:
+        image_list.append(image_info.image_path)
+    return image_list
+# def get_same_image(face_id):
+#     image_info_list = ImageInfo.query.filter().all()
+#
+#     image_list = []
+#     if not image_info_list:
+#         return None, BAD_EUCLIDEAN_DISTANCE
+#     for image_info in image_info_list:
+#         face_distance = get_face_distance(face_id, image_info.face_id)
+#         if face_distance < 1:
+#             image_list.append(image_info)
+#     return image_list
 
 
 
