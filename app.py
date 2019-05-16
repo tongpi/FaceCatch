@@ -8,7 +8,7 @@ from facecatch.database import db
 import settings
 from apscheduler.schedulers.background import BackgroundScheduler
 from facecatch.utils import pretreatment_image
-from facecatch.search.views import ImageList
+from facecatch.search.views import ImageListResource, ImageResource
 
 webapp = Flask(__name__, template_folder="facecatch/templates", static_folder="facecatch/static")
 cas = CAS(webapp)
@@ -28,7 +28,8 @@ webapp.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = settings.SQLALCHEMY_TRACK_MODI
 db.init_app(webapp)
 
 api = Api(webapp)
-api.add_resource(ImageList, '/api/images')
+api.add_resource(ImageListResource, '/api/images_list')
+api.add_resource(ImageResource, '/api/image/<unknown_id>')
 
 
 scheduler = BackgroundScheduler()

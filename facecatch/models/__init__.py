@@ -29,9 +29,10 @@ class PersonInfo(db.Model):
 
 class ImageInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    unknown_id = db.Column(db.Integer, db.ForeignKey("unknown_person.id"))
     label = db.Column(db.String())
     create_time = db.Column(db.String())
-    image_path = db.Column(db.String(), unique=True)
+    image_path = db.Column(db.String())
 
     __tablename__ = 'image_info'
 
@@ -46,5 +47,11 @@ class ImageInfo(db.Model):
         return d
 
 
+class UnknownPersonInfo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String())
+    face_id = db.Column(db.String())
+    image_path = db.Column(db.String())
 
+    __tablename__ = 'unknown_person'
 

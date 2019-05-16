@@ -9,7 +9,7 @@ FACECATCH_URL = "https://recognize.lhqw.gfdx.mtn:4231/"
 
 FLASK_SECRET_KEY = 'face_catch'
 
-SQLALCHEMY_DATABASE_URI = os.environ.get("FACECATCH_DATABASE_URL", "postgresql://postgres@facecatch.data.address/new_face")
+SQLALCHEMY_DATABASE_URI = os.environ.get("FACECATCH_DATABASE_URL", "postgresql://postgres@facecatch.data.address/face0515")
 SQLALCHEMY_TRACK_MODIFICATIONS = os.environ.get("SQLALCHEMY_TRACK_MODIFICATIONS", False)
 
 # DIGITS地址的配置
@@ -30,5 +30,5 @@ CAS_LOGOUT_ROUTE = os.environ.get('CAS_LOGOUT_ROUTE', "/logout")
 CAS_AFTER_LOGOUT = os.environ.get('CAS_AFTER_LOGOUT', FACECATCH_URL)
 
 # 预处理图片的路径
-PRETREATMENT_IMAGE_PATH = os.environ.get('PRETREATMENT_IMAGE_PATH', r"C:\Users\dengzihao\Desktop\dzh\test_file")
+PRETREATMENT_IMAGE_PATH = os.environ.get('PRETREATMENT_IMAGE_PATH', "C:/Users/dengzihao/Desktop/dzh/test0515/")
 

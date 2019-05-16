@@ -12,11 +12,13 @@ import requests
 import json
 
 from functools import wraps
+
+from PIL import Image
 from flask import session, redirect, url_for, request
 
 import settings
 from facecatch.database import db
-from .models import PersonInfo, ImageInfo
+from .models import PersonInfo, ImageInfo, UnknownPersonInfo
 
 BAD_EUCLIDEAN_DISTANCE = 1
 
@@ -45,17 +47,24 @@ def get_image_face(image_file, base=None):
     data = {"data": [image]}
     # 发送请求调用facenet服务获取图像中包含的人脸信息
     req = requests.post(url, json=data)
-    face_list = json.loads(req.content.decode('utf-8'))['data']
-    if face_list:
+    try:
+        face_list = json.loads(req.content.decode('utf-8'))['data']
+    except:
+        return []
+    if face_list is not None:
         return face_list
-    return None
+    return []
 
 
-def get_same_person(face_id):
+def get_same_person(face_id, model=None):
     """获取库中相同的人的信息face_id 为列表，返回距离最小的人信息及人脸距离"""
 
-    # 获取人脸库中的所有人的信息
-    person_list = PersonInfo.query.filter().all()
+    if model == "unknown":
+        # 获取未知人脸库中的所有人的信息
+        person_list = UnknownPersonInfo.query.filter().all()
+    else:
+        # 获取人脸库中的所有人的信息
+        person_list = PersonInfo.query.filter().all()
     # 用于保存对比人脸的结果key:欧式距离 value: 人信息的对象
     person_dict = {}
     if not person_list:
@@ -151,6 +160,18 @@ def get_file_create_time(file):
     return str(os.path.getctime(file))
 
 
+def get_all_files(path, suffix1, suffix2):
+    """获取指定目录下所有指定文件"""
+    return [os.path.join(root, file) for root, dirs, files in os.walk(path) for file in files if file.endswith(suffix1) or file.endswith(suffix2)]
+
+
+def get_all_image(path):
+    """获取指定目录下所有JPG，PNG图片"""
+    jpg_path = glob.glob(path + "*.jpg")
+    png_path = glob.glob(path + "*.png")
+    return jpg_path + png_path
+
+
 def get_create_time():
     return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
 
@@ -163,12 +184,14 @@ def pretreatment_image(app):
             max_create_time = ImageInfo.query.order_by(db.desc("create_time")).first().create_time
         except AttributeError:
             max_create_time = None
+
         image_path = settings.PRETREATMENT_IMAGE_PATH
+        unknown_image_path = []
+
         if image_path:
-            jpg_path = glob.glob(image_path + "/*.jpg")
-            png_path = glob.glob(image_path + "/*.png")
             # 获取所有图片的路径
-            file_list = jpg_path + png_path
+            # file_list = get_all_image(image_path)
+            file_list = get_all_files(image_path, '.jpg', '.png')
             for file in file_list:
                 # 获取文件创建时间
                 file_create_time = get_file_create_time(file)
@@ -177,8 +200,8 @@ def pretreatment_image(app):
                 with open(file, 'rb') as f:
                     file_b64 = base64.b64encode(f.read()).decode("utf-8")
                     face_list = get_image_face(file_b64, "true")
-                    if face_list:
-                        face_id = face_list[0]['faceID']
+                    for face_data in face_list:
+                        face_id = face_data['faceID']
                         person, distance = get_same_person(face_id)
                         if distance < 0.9:
                             image_info = ImageInfo(
@@ -188,49 +211,68 @@ def pretreatment_image(app):
                             )
                             db.session.add(image_info)
                             db.session.commit()
+                        else:
+                            unknown_image_path.append(file)
+
+        # 读取未识别的图片
+        for unknown_image in set(unknown_image_path):
+            file_create_time = get_file_create_time(unknown_image)
+            with open(unknown_image, 'rb') as f:
+                file_b64 = base64.b64encode(f.read()).decode("utf-8")
+                face_list = get_image_face(file_b64, "true")
+                for face_data in face_list:
+                    face_id = face_data['faceID']
+                    # 从未知人员库进行比对
+                    person, distance = get_same_person(face_id, "unknown")
+                    if distance < 0.9:
+                        # 存储至图片库
+                        image_info = ImageInfo(
+                            unknown_id=person.id,
+                            label=person.name,
+                            create_time=file_create_time,
+                            image_path=unknown_image,
+                        )
+                        db.session.add(image_info)
+                        db.session.commit()
+                    else:
+                        try:
+                            max_unknown_id = UnknownPersonInfo.query.order_by(db.desc("id")).first().id
+                        except AttributeError:
+                            max_unknown_id = 0
+
+                        unknown_info = UnknownPersonInfo(
+                            name="未知人员{}".format(max_unknown_id + 1),
+                            face_id=str(face_id),
+                            image_path=unknown_image,
+                        )
+                        db.session.add(unknown_info)
+                        db.session.commit()
+
     print("执行完毕，时间： " + datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3])
     return None
-# def pretreatment_image(app):
-#     with app.app_context():
-#         image_path = settings.PRETREATMENT_IMAGE_PATH
-#         if image_path:
-#             jpg_path = glob.glob(image_path + "/*.jpg")
-#             png_path = glob.glob(image_path + "/*.png")
-#             file_list = jpg_path + png_path
-#             for file in file_list:
-#                 with open(file, 'rb') as f:
-#                     file_b64 = base64.b64encode(f.read()).decode("utf-8")
-#                     face_list = get_image_face(file_b64, "true")
-#                     if face_list:
-#                         face_id = face_list[0]['faceID']
-#                         image_info = ImageInfo(
-#                             face_id=str(face_id),
-#                             image=file_b64
-#                         )
-#                         db.session.add(image_info)
-#                         db.session.commit()
-#                 os.remove(file)
-#     print("执行完毕，时间： " + datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3])
 
 
 def get_same_image(label):
+    """从预处理图片库中返回匹配的图片信息"""
     image_info_list = ImageInfo.query.filter(ImageInfo.label == label).all()
 
     image_list = []
     for image_info in image_info_list:
-        image_list.append(image_info.image_path)
+        image_list.append(
+            {"unknown_id": image_info.unknown_id,
+             "path": image_info.image_path})
     return image_list
-# def get_same_image(face_id):
-#     image_info_list = ImageInfo.query.filter().all()
-#
-#     image_list = []
-#     if not image_info_list:
-#         return None, BAD_EUCLIDEAN_DISTANCE
-#     for image_info in image_info_list:
-#         face_distance = get_face_distance(face_id, image_info.face_id)
-#         if face_distance < 1:
-#             image_list.append(image_info)
-#     return image_list
 
 
-
+def save_feature_image(face_list):
+    """根据facenet返回的人脸位置，在原图中裁剪出人脸图片"""
+    bbox_list = []
+    for face_data in face_list:
+        bbox = face_data["bbox"]
+        bbox_tuple = (bbox["xmin"], bbox["ymin"], bbox["xmax"], bbox["ymax"])
+        bbox_list.append(bbox_tuple)
+    img = Image.open(r"C:\Users\dengzihao\Desktop\dzh\桌面文件\_DSC1103.JPG", )
+    for index, bbox_tuple in enumerate(bbox_list):
+        region = img.crop(bbox_tuple)
+        region.save(r"C:\Users\dengzihao\Desktop\dzh\人脸提取/{}.jpg".format(index))
+    return None
