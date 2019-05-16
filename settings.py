@@ -31,4 +31,7 @@ CAS_AFTER_LOGOUT = os.environ.get('CAS_AFTER_LOGOUT', FACECATCH_URL)
 
 # 预处理图片的路径
 PRETREATMENT_IMAGE_PATH = os.environ.get('PRETREATMENT_IMAGE_PATH', "C:/Users/dengzihao/Desktop/dzh/test0515/")
+PRETREATMENT_TIME = os.environ.get('PRETREATMENT_TIME', "22:00")
+PRETREATMENT_HOUR = int(PRETREATMENT_TIME.split(":")[0])
+PRETREATMENT_MINUTE = int(PRETREATMENT_TIME.split(":")[1])
 

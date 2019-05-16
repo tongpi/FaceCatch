@@ -33,7 +33,7 @@ api.add_resource(ImageResource, '/api/image/<unknown_id>')
 
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(pretreatment_image, "cron", hour=14, minute=50, args=[webapp])
+scheduler.add_job(pretreatment_image, "cron", hour=settings.PRETREATMENT_HOUR, minute=settings.PRETREATMENT_MINUTE, args=[webapp])
 # scheduler.add_job(pretreatment_image, "interval", minutes=2, args=[webapp])
 scheduler.start()
 

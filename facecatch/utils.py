@@ -248,7 +248,7 @@ def pretreatment_image(app):
                         db.session.add(unknown_info)
                         db.session.commit()
 
-    print("执行完毕，时间： " + datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3])
+    # print("执行完毕，时间： " + datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3])
     return None
 
 
