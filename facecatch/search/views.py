@@ -71,9 +71,13 @@ class ImageListResource(Resource):
             data = eval(request.get_data().decode('utf8'))['data']
         except:
             data = request.get_data().decode('utf8')
+
         face_list = get_image_face(data, 'true')
         if face_list:
             person, distance = get_same_person(face_list[0]['faceID'])
+            if distance < 0.9:
+                return get_same_image(person.name)
+            person, distance = get_same_person(face_list[0]['faceID'], "unknown")
             if distance < 0.9:
                 return get_same_image(person.name)
         return jsonify({"error": "传入的照片不符合规范"})

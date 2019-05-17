@@ -4,9 +4,10 @@ services:
   server:
     image: gds/facecatch:latest
     volumes:
-      - .:/var/www/
+      - /home/data/dzh:/home/data/
     ports:
       - "50666:5000"
     environment:
-      FACECATCH_DATABASE_URL: "postgresql:///"
+      FACECATCH_DATABASE_URL: "postgresql://postgres@192.168.1.143/face0515"
+      PRETREATMENT_IMAGE_PATH: "/home/data/pretreatment"
     restart: always
