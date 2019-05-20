@@ -67,12 +67,18 @@ class ImageListResource(Resource):
         需要发送一个以data为键，base64图片为值的键值对的请求
         :return:返回匹配到的所有相似的特征图片
         """
-        try:
-            data = eval(request.get_data().decode('utf8'))['data']
-        except:
-            data = request.get_data().decode('utf8')
+        if request.get_json():
+            path = request.get_json()['path']
+        else:
+            return jsonify({"error": "请发送json格式的数据。"})
 
-        face_list = get_image_face(data, 'true')
+        try:
+            with open(path, 'rb') as f:
+                data = f.read()
+        except FileNotFoundError:
+            return jsonify({"error": "传入的路径不正确。"})
+
+        face_list = get_image_face(data)
         if face_list:
             person, distance = get_same_person(face_list[0]['faceID'])
             if distance < 0.9:
