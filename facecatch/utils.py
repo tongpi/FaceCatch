@@ -14,7 +14,7 @@ import json
 from functools import wraps
 
 from PIL import Image
-from flask import session, redirect, url_for, request
+from flask import session, redirect, url_for, request, jsonify
 
 import settings
 from facecatch.database import db
@@ -256,12 +256,23 @@ def get_same_image(label):
     """从预处理图片库中返回匹配的图片信息"""
     image_info_list = ImageInfo.query.filter(ImageInfo.label == label).all()
 
-    image_list = []
-    for image_info in image_info_list:
-        image_list.append(
-            {"unknown_id": image_info.unknown_id,
-             "path": image_info.image_path})
-    return image_list
+    # TODO(dzh): 此处注释为标准JSON返回格式，因配合调用方，临时使用字符串返回值
+    # json_data = {"image_data": []}
+    # for image_info in image_info_list:
+    #     json_data["image_data"].append(
+    #         {"unknown_id": image_info.unknown_id,
+    #          "path": image_info.image_path})
+    # return jsonify(json_data)
+
+    data_str = ''
+    try:
+        for image_info in image_info_list:
+            data_str += "{unknown_id:%s, path:%s}@#!@#!" % (image_info.unknown_id, image_info.image_path)
+    except:
+        return None
+    return data_str
+
+
 
 
 def save_feature_image(face_list):
