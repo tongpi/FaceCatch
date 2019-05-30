@@ -33,5 +33,7 @@ def get_feature(image):
 
     # 从digits获取json数据
     req = requests.post(url=url, data=data, files=files)
-    predictions = json.loads(req.content.decode('utf-8'))['predictions']
-    return predictions
+    if req:
+        predictions = json.loads(req.content.decode('utf-8'))['predictions']
+        return predictions
+    return None
