@@ -7,7 +7,7 @@ blueprint = flask.Blueprint('facecatch', __name__)
 
 
 @blueprint.route('/logout', methods=['POST', 'GET'])
-@login_required
+# @login_required
 def logout():
     """用户注销处理"""
     cas_username_session_key = current_app.config['CAS_USERNAME_SESSION_KEY']

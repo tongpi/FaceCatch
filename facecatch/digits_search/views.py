@@ -12,7 +12,7 @@ blueprint = flask.Blueprint('digits_search', __name__)
 
 
 @blueprint.route('/digits_search', methods=['GET','POST'])
-@login_required
+# @login_required
 def digits_search():
     upload_form = UploadForm()
     if request.method == 'GET':

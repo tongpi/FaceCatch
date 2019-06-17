@@ -28,7 +28,7 @@ def inspect_image():
 
 
 @blueprint.route('/add', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def add():
     """将录入信息处理后存储到数据库中"""
 
@@ -57,7 +57,7 @@ def add():
 
 
 @blueprint.route('/batch_add', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def batch_add():
     form = BatchAddForm()
     if request.method == 'POST':
@@ -96,7 +96,7 @@ def batch_add():
 
 
 @blueprint.route('/show', methods=['GET'])
-@login_required
+# @login_required
 def show():
     """返回录入信息展示页面"""
     persons = PersonInfo.query.filter().all()
@@ -104,7 +104,7 @@ def show():
 
 
 @blueprint.route('/detail/<person_id>', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def detail(person_id):
     """返回录入信息详情页"""
 
@@ -114,7 +114,7 @@ def detail(person_id):
 
 
 @blueprint.route('/delete_person', methods=['POST'])
-@login_required
+# @login_required
 def delete_person():
     """删除指定人员信息"""
     data = request.get_data().decode()
@@ -127,7 +127,7 @@ def delete_person():
 
 
 @blueprint.route('/update_person/<person_id>', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def update_person(person_id):
     """修改指定人员的信息"""
 
@@ -160,7 +160,7 @@ def update_person(person_id):
 
 
 @blueprint.route('/download_file', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def download_file():
     response = make_response(send_from_directory('facecatch/static/sample_file', filename='face.zip', as_attachment=True))
     response.headers["Content-Disposition"] = "attachment; filename={}".format('face.zip'.encode().decode('latin-1'))

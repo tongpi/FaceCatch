@@ -11,15 +11,15 @@ from facecatch.utils import pretreatment_image
 from facecatch.search.views import ImageListResource, ImageResource
 
 webapp = Flask(__name__, template_folder="facecatch/templates", static_folder="facecatch/static")
-cas = CAS(webapp)
+# cas = CAS(webapp)
 
 
 ssl._create_default_https_context = ssl._create_unverified_context
-webapp.config['CAS_SERVER'] = settings.CAS_SERVER
-webapp.config['CAS_AFTER_LOGIN'] = settings.CAS_AFTER_LOGIN
-webapp.config['CAS_VALIDATE_ROUTE'] = settings.CAS_VALIDATE_ROUTE
-webapp.config['CAS_LOGOUT_ROUTE'] = settings.CAS_LOGOUT_ROUTE
-webapp.config['CAS_AFTER_LOGOUT'] = settings.CAS_AFTER_LOGOUT
+# webapp.config['CAS_SERVER'] = settings.CAS_SERVER
+# webapp.config['CAS_AFTER_LOGIN'] = settings.CAS_AFTER_LOGIN
+# webapp.config['CAS_VALIDATE_ROUTE'] = settings.CAS_VALIDATE_ROUTE
+# webapp.config['CAS_LOGOUT_ROUTE'] = settings.CAS_LOGOUT_ROUTE
+# webapp.config['CAS_AFTER_LOGOUT'] = settings.CAS_AFTER_LOGOUT
 
 
 webapp.config['SECRET_KEY'] = settings.FLASK_SECRET_KEY

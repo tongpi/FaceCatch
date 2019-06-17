@@ -17,10 +17,11 @@ cas = CAS()
 
 
 @blueprint.route('/', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def home():
     """将上传的图片进行比对"""
-    session['username'] = cas.username
+    # session['username'] = cas.username
+    session['username'] = ''
 
     upload_form = UploadForm()
     return render_template('search/search.html',
@@ -29,7 +30,7 @@ def home():
 
 
 @blueprint.route('/search', methods=['POST'])
-@login_required
+# @login_required
 def search():
     upload_form = UploadForm()
     upload_file = request.files['file'].read()
@@ -53,7 +54,7 @@ def search():
 
 
 @blueprint.route('/pretreatment', methods=['GET'])
-@login_required
+# @login_required
 def pretreatment():
     pretreatment_image(current_app)
     flash("预处理完成")
