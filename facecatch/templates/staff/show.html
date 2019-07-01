@@ -32,7 +32,7 @@
                               <span class="float-left">
                                   <div class="fakeimg">
                                       <a href="{{ url_for('staff.detail', person_id=person.id) }}">
-                                          <img src="data:image/png;base64,{{ person.image }}" width="126">
+                                          <img src="{{ person.image }}" width="126">
                                       </a>
                                   </div>
                               </span>

@@ -32,6 +32,8 @@ FACENET_EMOTION_DICT = {
     'Happy': '开心',
     'unknown': '未知'
 }
+CREATED_PERSON_IMAGES_PATH = os.path.abspath(os.path.dirname(__file__)).split('FaceCatch')[0] + 'FaceCatch/facecatch/static/person_images'
+PERSON_IMAGES_PATH = '/static/person_images'
 
 
 def get_image_face(image_file, base=None):
@@ -108,7 +110,12 @@ def get_batch_info(file):
     file_zip = zipfile.ZipFile(file)
 
     # 获取excel表对象
-    excel_file = file_zip.open('{}face.xlsx'.format(file_zip.namelist()[0]))
+    try:
+        excel_file = file_zip.open('{}face.xlsx'.format(file_zip.namelist()[0]))
+    except KeyError:
+        excel_file = file_zip.open('{}face.xls'.format(file_zip.namelist()[0]))
+    except Exception:
+        return None
 
     # 读取excel表的数据
     excel_datas = pandas.read_excel(excel_file).values
@@ -124,6 +131,7 @@ def get_batch_info(file):
             result_dict['image'] = file_zip.open('face/image/{}.png'.format(excel_data[2])).read()
         except KeyError:
             result_dict['image'] = file_zip.open('face/image/{}.jpg'.format(excel_data[2])).read()
+        write_image(result_dict['image'], result_dict['id_card'])
         result.append(result_dict)
 
     file_zip.close()
@@ -167,9 +175,14 @@ def get_all_files(path, suffix1, suffix2):
 
 def get_all_image(path):
     """获取指定目录下所有JPG，PNG图片"""
-    jpg_path = glob.glob(path + "*.jpg")
-    png_path = glob.glob(path + "*.png")
-    return jpg_path + png_path
+    image_path = []
+    for root, dirs, files in os.walk(path):
+        image_path += glob.glob(root + '/*.JPG')
+        image_path += glob.glob(root + '/*.PNG')
+    # jpg_path = glob.glob(path + "/*.JPG")
+    # png_path = glob.glob(path + "/*.PNG")
+    # return jpg_path + png_path
+    return image_path
 
 
 def get_create_time():
@@ -190,8 +203,9 @@ def pretreatment_image(app):
 
         if image_path:
             # 获取所有图片的路径
-            # file_list = get_all_image(image_path)
             file_list = get_all_files(image_path, '.jpg', '.png')
+            file_list = file_list if file_list else get_all_image(image_path)
+
             for file in file_list:
                 # 获取文件创建时间
                 file_create_time = get_file_create_time(file)
@@ -273,8 +287,6 @@ def get_same_image(label):
     return data_str
 
 
-
-
 def save_feature_image(face_list):
     """根据facenet返回的人脸位置，在原图中裁剪出人脸图片"""
     bbox_list = []
@@ -287,3 +299,9 @@ def save_feature_image(face_list):
         region = img.crop(bbox_tuple)
         region.save(r"C:\Users\dengzihao\Desktop\dzh\人脸提取/{}.jpg".format(index))
     return None
+
+
+def write_image(image, id_card):
+    with open(CREATED_PERSON_IMAGES_PATH + '/{}.jpg'.format(id_card), 'wb') as f:
+        f.write(image)
+        return None

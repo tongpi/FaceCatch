@@ -20,9 +20,10 @@ def get_feature(image):
 
     # digits模型分析的地址与job_id
     url = settings.DISCERN_URL
-    job_id = get_all_models()
     if settings.DIGITS_JOB_ID:
         job_id = settings.DIGITS_JOB_ID
+    else:
+        job_id = get_all_models()
 
     data = {
             'job_id': job_id,

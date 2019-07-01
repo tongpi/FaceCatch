@@ -1,5 +1,4 @@
 import base64
-
 import flask
 
 from flask import request, render_template, redirect, url_for, flash, make_response, send_from_directory
@@ -8,7 +7,8 @@ from flask_cas import login_required
 from facecatch.database import db
 from facecatch.models import PersonInfo
 from facecatch.staff.forms import AddForm, UpdateForm, BatchAddForm
-from facecatch.utils import get_image_face, get_batch_info, string_to_file, get_create_time
+from facecatch.utils import get_image_face, get_batch_info, string_to_file, get_create_time, write_image, \
+    PERSON_IMAGES_PATH
 
 blueprint = flask.Blueprint('staff', __name__)
 
@@ -35,6 +35,7 @@ def add():
     add_form = AddForm()
     if request.method == 'POST':
         image = request.files['file'].read()
+        write_image(image, request.form['id_card'])
         face_list = get_image_face(image)
 
         # 将录入信息存储到数据库
@@ -44,7 +45,7 @@ def add():
             id_card=request.form['id_card'],
             description=request.form['description'],
             face_id=str(face_list[0]['faceID']),
-            image=base64.b64encode(image).decode(),
+            image=PERSON_IMAGES_PATH+'/{}.jpg'.format(request.form['id_card']),
             create_time=get_create_time(),
             )
 
@@ -65,7 +66,7 @@ def batch_add():
         try:
             person_list = get_batch_info(string_to_file(file_zip))
         except:
-            flash('上传的ZIP文件不符合规范')
+            flash('上传的zip文件不符合规范，请按示例文件重新生成格式正确的zip文件')
             person_list = []
 
         person_data = []
@@ -78,7 +79,7 @@ def batch_add():
                     id_card=person['id_card'],
                     description=person['description'],
                     face_id=str(face_list[0]['faceID']),
-                    image=base64.b64encode(person['image']).decode(),
+                    image=PERSON_IMAGES_PATH + '/{}.jpg'.format(person['id_card']),
                     create_time=get_create_time(),
                 ))
             else:
