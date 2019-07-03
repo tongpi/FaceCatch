@@ -14,7 +14,7 @@ import json
 from functools import wraps
 
 from PIL import Image
-from flask import session, redirect, url_for, request, jsonify
+from flask import session, redirect, url_for, request, jsonify, flash
 
 import settings
 from facecatch.database import db
@@ -262,7 +262,7 @@ def pretreatment_image(app):
                         db.session.add(unknown_info)
                         db.session.commit()
 
-    # print("执行完毕，时间： " + datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3])
+    print("预处理完毕，时间： " + datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3])
     return None
 
 

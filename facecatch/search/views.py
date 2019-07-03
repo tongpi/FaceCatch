@@ -1,4 +1,6 @@
 import base64
+from threading import Thread
+
 import flask
 
 from flask import request, render_template, session, jsonify, current_app, redirect, flash
@@ -55,8 +57,10 @@ def search():
 @blueprint.route('/pretreatment', methods=['GET'])
 @login_required
 def pretreatment():
-    pretreatment_image(current_app)
-    flash("预处理完成")
+    app = current_app._get_current_object()
+    pre_job = Thread(target=pretreatment_image, args=[app])
+    pre_job.start()
+    flash('正在预处理中，请稍后。。。')
     return redirect('/')
 
 
