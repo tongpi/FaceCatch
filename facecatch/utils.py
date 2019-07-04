@@ -32,8 +32,6 @@ FACENET_EMOTION_DICT = {
     'Happy': '开心',
     'unknown': '未知'
 }
-CREATED_PERSON_IMAGES_PATH = os.path.abspath(os.path.dirname(__file__)).split('FaceCatch')[0] + 'FaceCatch/facecatch/static/person_images'
-PERSON_IMAGES_PATH = '/static/person_images'
 
 
 def get_image_face(image_file, base=None):
@@ -302,6 +300,6 @@ def save_feature_image(face_list):
 
 
 def write_image(image, id_card):
-    with open(CREATED_PERSON_IMAGES_PATH + '/{}.jpg'.format(id_card), 'wb') as f:
+    with open(settings.PERSON_STORAGE_ADDRESS + '/{}.jpg'.format(id_card), 'wb') as f:
         f.write(image)
         return None

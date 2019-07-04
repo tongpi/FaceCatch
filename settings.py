@@ -9,7 +9,7 @@ FACECATCH_URL = "https://recognize.lhqw.gfdx.mtn:5000/"
 
 FLASK_SECRET_KEY = 'face_catch'
 
-SQLALCHEMY_DATABASE_URI = os.environ.get("FACECATCH_DATABASE_URL", "postgresql:///postgres")
+SQLALCHEMY_DATABASE_URI = os.environ.get("FACECATCH_DATABASE_URL", "postgresql:///")
 SQLALCHEMY_TRACK_MODIFICATIONS = os.environ.get("SQLALCHEMY_TRACK_MODIFICATIONS", False)
 
 # DIGITS地址的配置
@@ -35,3 +35,7 @@ PRETREATMENT_TIME = os.environ.get('PRETREATMENT_TIME', "22:00")
 PRETREATMENT_HOUR = int(PRETREATMENT_TIME.split(":")[0])
 PRETREATMENT_MINUTE = int(PRETREATMENT_TIME.split(":")[1])
 
+# 人员信息图片存储位置（重要！）
+PERSON_STORAGE_ADDRESS = os.environ.get('PERSON_STORAGE_ADDRESS',
+                                        os.path.abspath(os.path.dirname(__file__))
+                                        .split('FaceCatch')[0] + 'FaceCatch/facecatch/static/person_images')

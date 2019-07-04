@@ -4,11 +4,11 @@ import flask
 from flask import request, render_template, redirect, url_for, flash, make_response, send_from_directory
 from flask_cas import login_required
 
+import settings
 from facecatch.database import db
 from facecatch.models import PersonInfo
 from facecatch.staff.forms import AddForm, UpdateForm, BatchAddForm
-from facecatch.utils import get_image_face, get_batch_info, string_to_file, get_create_time, write_image, \
-    PERSON_IMAGES_PATH
+from facecatch.utils import get_image_face, get_batch_info, string_to_file, get_create_time, write_image
 
 blueprint = flask.Blueprint('staff', __name__)
 
@@ -45,7 +45,7 @@ def add():
             id_card=request.form['id_card'],
             description=request.form['description'],
             face_id=str(face_list[0]['faceID']),
-            image=PERSON_IMAGES_PATH+'/{}.jpg'.format(request.form['id_card']),
+            image=settings.PERSON_STORAGE_ADDRESS+'/{}.jpg'.format(request.form['id_card']),
             create_time=get_create_time(),
             )
 
@@ -79,7 +79,7 @@ def batch_add():
                     id_card=person['id_card'],
                     description=person['description'],
                     face_id=str(face_list[0]['faceID']),
-                    image=PERSON_IMAGES_PATH + '/{}.jpg'.format(person['id_card']),
+                    image=settings.PERSON_STORAGE_ADDRESS + '/{}.jpg'.format(person['id_card']),
                     create_time=get_create_time(),
                 ))
             else:
@@ -101,6 +101,9 @@ def batch_add():
 def show():
     """返回录入信息展示页面"""
     persons = PersonInfo.query.filter().all()
+    for person in persons:
+        with open(person.image, 'rb') as f:
+            person.person_image = base64.b64encode(f.read()).decode()
     return render_template('staff/show.html', persons=persons)
 
 
@@ -110,7 +113,8 @@ def detail(person_id):
     """返回录入信息详情页"""
 
     person = PersonInfo.query.filter(PersonInfo.id == person_id).first()
-
+    with open(person.image, 'rb') as f:
+        person.person_image = base64.b64encode(f.read()).decode()
     return render_template('staff/detail.html', person=person)
 
 
@@ -148,8 +152,8 @@ def update_person(person_id):
 
         if 'file' not in request.form:
             image = request.files['file'].read()
-
-            person.image = base64.b64encode(image).decode()
+            write_image(image, person.id_card)
+            person.image = settings.PERSON_STORAGE_ADDRESS+'/{}.jpg'.format(person.id_card)
 
             person.face_id = str(get_image_face(image)[0]['faceID'])
 
@@ -157,6 +161,8 @@ def update_person(person_id):
         flash('更新成功')
         return redirect(url_for('staff.show'))
 
+    with open(person.image, 'rb') as f:
+        person.person_image = base64.b64encode(f.read()).decode()
     return render_template('staff/update.html', person=person, form=update_form)
 
 
