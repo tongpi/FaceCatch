@@ -215,7 +215,7 @@ def pretreatment_image(app):
                     for face_data in face_list:
                         face_id = face_data['faceID']
                         person, distance = get_same_person(face_id)
-                        if distance < 0.9:
+                        if distance < 0.8:
                             image_info = ImageInfo(
                                 label=person.name,
                                 create_time=file_create_time,
@@ -236,7 +236,7 @@ def pretreatment_image(app):
                     face_id = face_data['faceID']
                     # 从未知人员库进行比对
                     person, distance = get_same_person(face_id, "unknown")
-                    if distance < 0.9:
+                    if distance < 0.8:
                         # 存储至图片库
                         image_info = ImageInfo(
                             unknown_id=person.id,
@@ -246,7 +246,9 @@ def pretreatment_image(app):
                         )
                         db.session.add(image_info)
                         db.session.commit()
-                    else:
+                        break
+                    # 判定照片中只含有一个人的情况下，才会添加到未知人员库
+                    elif len(face_list) == 1:
                         try:
                             max_unknown_id = UnknownPersonInfo.query.order_by(db.desc("id")).first().id
                         except AttributeError:
