@@ -8,7 +8,7 @@ import settings
 from facecatch.database import db
 from facecatch.models import PersonInfo
 from facecatch.staff.forms import AddForm, UpdateForm, BatchAddForm
-from facecatch.utils import get_image_face, get_batch_info, string_to_file, get_create_time, write_image
+from facecatch.utils import get_image_face, get_batch_info, string_to_file, get_create_time
 
 blueprint = flask.Blueprint('staff', __name__)
 
@@ -35,7 +35,7 @@ def add():
     add_form = AddForm()
     if request.method == 'POST':
         image = request.files['file'].read()
-        write_image(image, request.form['id_card'])
+        PersonInfo.write_image(image, request.form['id_card'])
         face_list = get_image_face(image)
 
         # 将录入信息存储到数据库
@@ -102,8 +102,7 @@ def show():
     """返回录入信息展示页面"""
     persons = PersonInfo.query.filter().all()
     for person in persons:
-        with open(person.image, 'rb') as f:
-            person.person_image = base64.b64encode(f.read()).decode()
+        person.person_image = person.gen_img_static_path()
     return render_template('staff/show.html', persons=persons)
 
 
@@ -113,8 +112,7 @@ def detail(person_id):
     """返回录入信息详情页"""
 
     person = PersonInfo.query.filter(PersonInfo.id == person_id).first()
-    with open(person.image, 'rb') as f:
-        person.person_image = base64.b64encode(f.read()).decode()
+    person.person_image = person.gen_img_static_path()
     return render_template('staff/detail.html', person=person)
 
 
@@ -125,9 +123,9 @@ def delete_person():
     data = request.get_data().decode()
     person_id = data.split('=')[1]
     person = PersonInfo.query.filter(PersonInfo.id == int(person_id)).first()
+    person.delete_person_jpg()
     db.session.delete(person)
     db.session.commit()
-
     return "success"
 
 
@@ -144,6 +142,7 @@ def update_person(person_id):
         if request.form['name']:
             person.name = request.form['name']
         if request.form['id_card']:
+            person.update_person_jpg(request.form['id_card'])
             person.id_card = request.form['id_card']
         if request.form['description']:
             person.description = request.form['description']
@@ -152,8 +151,9 @@ def update_person(person_id):
 
         if 'file' not in request.form:
             image = request.files['file'].read()
-            write_image(image, person.id_card)
-            person.image = settings.PERSON_STORAGE_ADDRESS+'/{}.jpg'.format(person.id_card)
+            person.delete_person_jpg()
+            person.write_image(image, person.id_card)
+            person.image = person.person_image_path(person.id_card)
 
             person.face_id = str(get_image_face(image)[0]['faceID'])
 
@@ -161,8 +161,7 @@ def update_person(person_id):
         flash('更新成功')
         return redirect(url_for('staff.show'))
 
-    with open(person.image, 'rb') as f:
-        person.person_image = base64.b64encode(f.read()).decode()
+    person.person_image = person.gen_img_static_path()
     return render_template('staff/update.html', person=person, form=update_form)
 
 

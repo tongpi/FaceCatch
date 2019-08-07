@@ -39,22 +39,26 @@
             <div class="collapse navbar-collapse" id="navbarColor01">
               <ul class="navbar-nav header-menu">
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for("search.home") }}"><i class="anticon icon-home"></i> 人脸识别</a>
+                  <a class="nav-link" href="{{ url_for("search.home") }}"><i class="anticon icon-smile-circle"></i> 人脸识别</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for("realtime_video.view_video") }}" ><i class="anticon icon-dashboard"></i> 在线识别</a>
+                  <a class="nav-link" href="{{ url_for("realtime_video.view_video") }}" ><i class="anticon icon-cloud"></i> 在线识别</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for("expression.expression") }}" ><i class="anticon icon-layout"></i> 表情识别</a>
+                  <a class="nav-link" href="{{ url_for("expression.expression") }}" ><i class="anticon icon-smileo"></i> 表情识别</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" id="show" href="{{ url_for("staff.show") }}"><i class="anticon icon-book"></i> 人员管理</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for("digits_search.digits_search") }}"><i class="anticon icon-star"></i> DIGITS搜索</a>
+                  <a class="nav-link" href="{{ url_for("digits.digits_search") }}"><i class="anticon icon-star"></i> DIGITS搜索</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('search.pretreatment') }}">预处理图片</a>
+                  <a class="nav-link"
+                     onclick="if(confirm('您确定要进行图片预处理？\n（处理时间与图片数量成正比）'))
+                     {runPretreatment()}else{return false;}"
+                     style="cursor:pointer !important;"
+                  ><i class="anticon icon-clockcircle"></i> 预处理图片</a>
                 </li>
               </ul>
               <div class="form-inline navbar-search ml-auto">
@@ -81,7 +85,18 @@
     {% block content %}
     {% endblock %}
     </div>
-
+    <script>
+        function runPretreatment() {
+            $.ajax({
+                type: 'get',
+                contentType: "application/json; charset=UTF-8",
+                url: '/pretreatment',
+                success: function (data) {
+                    console.info();
+                }
+            })
+        }
+    </script>
     </layout>
 </body>
 </html>

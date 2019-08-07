@@ -20,7 +20,7 @@ def recognize():
         person, distance = get_same_person(face_list[0]['faceID'])
         emotion = get_person_emotion(face_list[0]['emotion'])[0]
         # 定义返回结果字典
-        if distance < 0.9:
+        if distance < 0.8:
             result_message['message'] = person.to_dict()
             result_message['emotion'] = FACENET_EMOTION_DICT[emotion]
             return jsonify(result_message)

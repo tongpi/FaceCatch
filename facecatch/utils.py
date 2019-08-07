@@ -14,7 +14,7 @@ import json
 from functools import wraps
 
 from PIL import Image
-from flask import session, redirect, url_for, request, jsonify, flash
+from flask import session, redirect, url_for, request
 
 import settings
 from facecatch.database import db
@@ -129,7 +129,7 @@ def get_batch_info(file):
             result_dict['image'] = file_zip.open('face/image/{}.png'.format(excel_data[2])).read()
         except KeyError:
             result_dict['image'] = file_zip.open('face/image/{}.jpg'.format(excel_data[2])).read()
-        write_image(result_dict['image'], result_dict['id_card'])
+        PersonInfo.write_image(result_dict['image'], result_dict['id_card'])
         result.append(result_dict)
 
     file_zip.close()
@@ -215,7 +215,7 @@ def pretreatment_image(app):
                     for face_data in face_list:
                         face_id = face_data['faceID']
                         person, distance = get_same_person(face_id)
-                        if distance < 0.8:
+                        if distance < 0.7:
                             image_info = ImageInfo(
                                 label=person.name,
                                 create_time=file_create_time,
@@ -236,7 +236,7 @@ def pretreatment_image(app):
                     face_id = face_data['faceID']
                     # 从未知人员库进行比对
                     person, distance = get_same_person(face_id, "unknown")
-                    if distance < 0.8:
+                    if distance < 0.7:
                         # 存储至图片库
                         image_info = ImageInfo(
                             unknown_id=person.id,
@@ -261,7 +261,6 @@ def pretreatment_image(app):
                         )
                         db.session.add(unknown_info)
                         db.session.commit()
-
     print("预处理完毕，时间： " + datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3])
     return None
 
@@ -300,8 +299,3 @@ def save_feature_image(face_list):
         region.save(r"C:\Users\dengzihao\Desktop\dzh\人脸提取/{}.jpg".format(index))
     return None
 
-
-def write_image(image, id_card):
-    with open(settings.PERSON_STORAGE_ADDRESS + '/{}.jpg'.format(id_card), 'wb') as f:
-        f.write(image)
-        return None

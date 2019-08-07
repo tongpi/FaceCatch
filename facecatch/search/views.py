@@ -27,7 +27,7 @@ def home():
     upload_form = UploadForm()
     return render_template('search/search.html',
                            form=upload_form,
-                           base64=base64,)
+                           base64=base64)
 
 
 @blueprint.route('/search', methods=['POST'])
@@ -38,7 +38,7 @@ def search():
     face_list = get_image_face(upload_file)
     if face_list:
         person, distance = get_same_person(face_list[0]['faceID'])
-        if distance < 0.9:
+        if distance < 0.7:
             person_info = person
             return render_template('search/search.html', form=upload_form, person=person_info, image=upload_file, base64=base64)
         else:
@@ -85,10 +85,10 @@ class ImageListResource(Resource):
         face_list = get_image_face(data)
         if face_list:
             person, distance = get_same_person(face_list[0]['faceID'])
-            if distance < 0.9:
+            if distance < 0.8:
                 return get_same_image(person.name)
             person, distance = get_same_person(face_list[0]['faceID'], "unknown")
-            if distance < 0.9:
+            if distance < 0.8:
                 return get_same_image(person.name)
         return jsonify({"error": "传入的照片不符合规范"})
 

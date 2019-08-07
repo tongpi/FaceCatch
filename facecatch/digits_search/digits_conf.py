@@ -1,29 +1,21 @@
+import os
+import random
+import shutil
+import time
+import librosa
 import requests
 import json
+import librosa.display
+import matplotlib.pyplot as plt
 
 import settings
 
 
-def get_all_models():
-    """从digits获取第一个识别模型"""
-    url = settings.DISCERN_MODEL_URL
-    req = requests.get(url)
-    models = json.loads(req.content)['models']
-    model_dict = {}
-    for model in models:
-        model_dict[model['job id']] = model['name']
-    return list(model_dict.keys())[0]
-
-
-def get_feature(image):
+def get_feature(image, job_id):
     """从digits分类模型获取图像识别的结果"""
 
     # digits模型分析的地址与job_id
     url = settings.DISCERN_URL
-    if settings.DIGITS_JOB_ID:
-        job_id = settings.DIGITS_JOB_ID
-    else:
-        job_id = get_all_models()
 
     data = {
             'job_id': job_id,
@@ -38,3 +30,20 @@ def get_feature(image):
         predictions = json.loads(req.content.decode('utf-8'))['predictions']
         return predictions
     return None
+
+
+def transform_wav(upload_file, job_id):
+    os.mkdir('./facecatch/digits_search/cache_file')
+    file_name = '%s-%s' % (time.strftime('%Y%m%d-%H%M%S'), str(random.randint(10, 100)))
+    with open('./facecatch/digits_search/cache_file/{}.wav'.format(file_name), 'wb') as f:
+        f.write(upload_file)
+    plt.figure(figsize=(2.56, 2.56))
+    x, sr = librosa.load('./facecatch/digits_search/cache_file/{}.wav'.format(file_name))
+    librosa.display.waveplot(x, sr=sr)
+    plt.savefig('./facecatch/digits_search/cache_file/{}.png'.format(file_name))
+    plt.clf()
+    with open('./facecatch/digits_search/cache_file/{}.png'.format(file_name), 'rb') as f:
+        data = f.read()
+    predictions = get_feature(data, job_id=job_id)
+    shutil.rmtree('./facecatch/digits_search/cache_file')
+    return predictions

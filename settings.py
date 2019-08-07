@@ -4,10 +4,10 @@
 import os
 
 
-FACECATCH_URL = "https://recognize.lhqw.gfdx.mtn:5000/"
+FACECATCH_URL = "https://locahost:8080/"
 
 
-FLASK_SECRET_KEY = 'face_catch'
+FLASK_SECRET_KEY = '0640572b589d623c5a88e0386827bbbb'
 
 SQLALCHEMY_DATABASE_URI = os.environ.get("FACECATCH_DATABASE_URL", "postgresql:///")
 SQLALCHEMY_TRACK_MODIFICATIONS = os.environ.get("SQLALCHEMY_TRACK_MODIFICATIONS", False)
