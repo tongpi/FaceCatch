@@ -2,12 +2,14 @@ version: "3"
 services:
 
   server:
-    image: gds/facecatch:latest
+    image: gds/facecatch:0.1
     volumes:
       - /home/data/dzh:/home/data/
     ports:
-      - "50666:5000"
+      - "5007:5000"
     environment:
-      FACECATCH_DATABASE_URL: "postgresql://postgres@192.168.1.143/face0515"
       PRETREATMENT_IMAGE_PATH: "/home/data/pretreatment"
+      FACENET_ADDRESS: "192.168.15.100:50555"
+      FACECATCH_DATABASE_URL: "postgresql://postgres@192.168.15.100/face_0807"
+      DISCERN_ADDRESS: "192.168.15.100:5018"
     restart: always
