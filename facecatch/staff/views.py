@@ -112,7 +112,8 @@ def detail(person_id):
     """返回录入信息详情页"""
 
     person = PersonInfo.query.filter(PersonInfo.id == person_id).first()
-    person.person_image = person.gen_img_static_path()
+    with open(person.image, 'rb') as f:
+        person.person_image = base64.b64encode(f.read()).decode()
     return render_template('staff/detail.html', person=person)
 
 
@@ -161,7 +162,8 @@ def update_person(person_id):
         flash('更新成功')
         return redirect(url_for('staff.show'))
 
-    person.person_image = person.gen_img_static_path()
+    with open(person.image, 'rb') as f:
+        person.person_image = base64.b64encode(f.read()).decode()
     return render_template('staff/update.html', person=person, form=update_form)
 
 

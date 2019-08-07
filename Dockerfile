@@ -2,7 +2,7 @@ FROM python:3.6
 
 RUN apt update && apt install -y --no-install-recommends \
     vim \
-    libsndfile1 \
+    libsndfile1
 
 RUN mkdir /var/FaceCatch
 
