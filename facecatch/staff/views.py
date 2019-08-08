@@ -102,7 +102,8 @@ def show():
     """返回录入信息展示页面"""
     persons = PersonInfo.query.filter().all()
     for person in persons:
-        person.person_image = person.gen_img_static_path()
+        with open(person.image, 'rb') as f:
+            person.person_image = base64.b64encode(f.read()).decode()
     return render_template('staff/show.html', persons=persons)
 
 

@@ -96,7 +96,7 @@
                     if (data['message'] != '' && data['message'] != null){
                         personInfo = data['message'];
                         result_html += '<h5>识别结果：</h5>' +
-                            '<img src="' + personInfo['image'] + '" width="126">' +
+                            '<img src="data:image/png;base64,' + personInfo['image'] + '" width="126">' +
                             '<ul><li><span class="font-weight-bold">名称：</span>'+ personInfo['name'] +'</li> ' +
                             '<ul><li><span class="font-weight-bold">部门：</span>'+ personInfo['department'] +'</li> ' +
                             '<li><span class="font-weight-bold">证件号：</span>'+ personInfo['id_card'] +'</li> ' +

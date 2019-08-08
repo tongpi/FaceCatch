@@ -4,7 +4,7 @@
 import os
 
 
-FACECATCH_URL = "https://locahost:8080/"
+FACECATCH_URL = "https://locahost:443/"
 
 
 FLASK_SECRET_KEY = '0640572b589d623c5a88e0386827bbbb'

@@ -1,3 +1,4 @@
+import base64
 import os
 
 import settings
@@ -23,7 +24,7 @@ class PersonInfo(db.Model):
             'id_card': self.id_card,
             'description': self.description,
             'face_id': self.face_id,
-            'image': self.gen_img_static_path(),
+            'image': self.gen_img_base64(),
             'department': self.department,
             'create_time': self.create_time
         }
@@ -43,8 +44,9 @@ class PersonInfo(db.Model):
         self.image = self.person_image_path(new_id)
         return None
 
-    def gen_img_static_path(self):
-        return "static" + self.image.split('static')[1]
+    def gen_img_base64(self):
+        with open(self.image, 'rb') as f:
+            return base64.b64encode(f.read()).decode()
 
     @staticmethod
     def write_image(image, id_card):
