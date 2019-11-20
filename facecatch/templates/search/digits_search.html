@@ -12,18 +12,18 @@
             <div class="card-body">
                 <div class="clearfix pt-3 pb-3">
                   <span class="float-left">
-                      <h5><i class="anticon icon-home"></i> DIGITS搜索页</h5>
+                      <h5><i class="anticon icon-home"></i> 自定义模型识别</h5>
                   </span>
-                  <div style="position: absolute; left: 200px; top: 33px; z-index: 999;">
-                      <a href="{{ url_for("digits.digits_sounds") }}" style="color: #fff">
-                          <button class="btn btn-primary pl-4 pr-4">
-                              语音识别
-                          </button>
-                      </a>
-                  </div>
+{#                  <div style="position: absolute; left: 200px; top: 33px; z-index: 999;">#}
+{#                      <a href="{{ url_for("digits.digits_sounds") }}" style="color: #fff">#}
+{#                          <button class="btn btn-primary pl-4 pr-4">#}
+{#                              语音识别#}
+{#                          </button>#}
+{#                      </a>#}
+{#                  </div>#}
 
                   <span class="float-center">
-                        <form method="post" action="/digits_search" enctype="multipart/form-data">
+                        <form method="post" action="/digits_search" enctype="multipart/form-data" id="digits-form">
 {#                            <div style="display: inline-block; position: relative;">#}
 {#                                {{ form.csrf_token }}#}
 {##}
@@ -35,7 +35,7 @@
 {#                                #}
 {#                                <div style="position: absolute; right: 0px; top: 0px; z-index: 999;" >{{ form.submit(class="btn btn-primary pl-4 pr-4") }}</div>#}
 {#                            </div>#}
-                            <div class="form-group row mb-4 mt-5"  id="image">
+                            <div class="form-group row mb-4 mt-5">
                                 <label for="inputPassword" class="col-sm-3 col-form-label text-right">{{ form.file.label }}：</label>
                                 <div class="col-sm-6">
                                   {{ form.file(class='custom-file-input') }}
@@ -45,12 +45,17 @@
                             <div class="form-group row mb-4">
                                 <label for="inputPassword1" class="col-sm-3 col-form-label text-right">{{ form.job_id.label }}：</label>
                                 <div class="col-sm-6">
-                                  {{ form.job_id(class='form-control') }}
+                                  <div>
+                                      <select class="form-control" id="select_model">
+                                      </select>
+                                  </div>
+{#                                  {{ form.job_id(class='form-control') }}#}
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-sm-3 offset-sm-4">
-                                    {{ form.submit(class='btn btn-primary mr-3 px-4 ') }}
+{#                                    {{ form.submit(class='btn btn-primary mr-3 px-4 ') }}#}
+                                    <input type="button" id="digits-submit" class="btn btn-primary mr-3 px-4" value="识 别">
                                 </div>
                             </div>
                         </form>
@@ -59,55 +64,58 @@
                 </div>
 
                 <hr>
-
+                <div id="loading" class="loading" style="display:none;">
+                    <i class="fa fa-3x fa-spinner fa-pulse"></i>&nbsp;模型预测中,请稍等...</div>
 
                 <div class="match-result">
-                <span id="image"></span>
-                    {% if predictions %}
                         <div class="title_box mt-4 mb-4">
                             <h5>识别结果</h5>
                             <span class="title_icon"></span>
                         </div>
                         <div class="row">
-                            <div class="col-sm-4">
-                                <img src="data:image/png;base64,{{ base64.b64encode(image).decode('utf-8') }}" width="200px">
+{#                            {% if predictions %}#}
+{#                            <div class="col-sm-4">#}
+{#                                <img src="data:image/png;base64,{{ base64.b64encode(image).decode('utf-8') }}" width="200px">#}
+{#                            </div>#}
+{#                            {% endif %}#}
+                            <div class="col-sm-4" id="image">
                             </div>
                             <div class="col-sm-8">
                                 <div class="search_Result">
-                                    <ul>
-                                        {% for prediction in predictions %}
-                                        <li>
-                                            <span class="font-weight-bold">名称：{{ prediction[0] }} </span>&nbsp;&nbsp;&nbsp;&nbsp;
-                                            <span class="font-weight-bold">预测值：{{ prediction[1] }}%</span>
-                                        </li>
-                                        {% endfor %}
+                                    <ul id="query_result">
+{#                                        {% for prediction in predictions %}#}
+{#                                        <li>#}
+{#                                            <span class="font-weight-bold">名称：{{ prediction[0] }} </span>&nbsp;&nbsp;&nbsp;&nbsp;#}
+{#                                            <span class="font-weight-bold">预测值：{{ prediction[1] }}%</span>#}
+{#                                        </li>#}
+{#                                        {% endfor %}#}
                                     </ul>
                                 </div>
                             </div>
                         </div>
-                    {% endif %}
-                    {% if match_result %}
-                        <div class="title_box mt-4 mb-4">
-                            <h5>搜索结果</h5>
-                            <span class="title_icon"></span>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-sm-4">
-                                <img src="data:image/png;base64,{{ base64.b64encode(image).decode('utf-8') }}" width="200px">
-                            </div>
-                            <div class="col-sm-8 d-flex align-items-center">
-                                {{ match_result }}
-                            </div>
-                        </div>
-                    {% endif %}
+{#                    {% if match_result %}#}
+{#                        <div class="title_box mt-4 mb-4">#}
+{#                            <h5>搜索结果</h5>#}
+{#                            <span class="title_icon"></span>#}
+{#                        </div>#}
+{##}
+{#                        <div class="row">#}
+{#                            <div class="col-sm-4">#}
+{#                                <img src="data:image/png;base64,{{ base64.b64encode(image).decode('utf-8') }}" width="200px">#}
+{#                            </div>#}
+{#                            <div class="col-sm-8 d-flex align-items-center">#}
+{#                                {{ match_result }}#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    {% endif %}#}
                 </div>
 
-                {% if not emotion and  not predictions and not match_result %}
-                    <div>
-                        <h3>请上传照片进行搜索！</h3>
-                    </div>
-                {% endif %}
+{#                {% if not emotion and  not predictions and not match_result %}#}
+{#                    <div>#}
+{#                        <h3>请上传照片进行搜索！</h3>#}
+{#                    </div>#}
+{#                {% endif %}#}
 
             </div>
         </div>
@@ -122,11 +130,78 @@
                image = $(this);
                imgsrc= image[0].files[0];
                $(".img").remove();
-               $("#image").append('<img src="" class="img" width="100px">');
+               $("#image").append('<img src="" class="img" width="100%">');
                $(".img").attr("src",URL.createObjectURL(imgsrc));
 
             });
-        })
+        });
 
+        $("#digits-submit").click(function () {
+            var form = document.getElementById("digits-form");
+            var formdata = new FormData(form);
+            $("#query_result").empty();
+            $.ajax({
+                type: 'post',
+                url: '/get_result',
+                data: formdata,
+                async: true,
+                cache: false,
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+                    $("#loading").show();
+                    $("#digits-submit").attr({ disabled: "disabled" });
+                },
+                success: function (data, textStatus) {
+                    {#$("#query_result").empty();#}
+                    $.each(data, function (value) {
+                        $("#query_result")
+                            .append("<li> <span class='font-weight-bold'>&nbsp;&nbsp;&nbsp; 名称：" + data[value][0] + "</span>" +
+                                "&nbsp;&nbsp;&nbsp; <span class='font-weight-bold'>预测值：" + data[value][1] + "% </span></li>");
+                    })
+                },
+                complete: function () {
+                    $("#loading").hide();
+                    $("#digits-submit").removeAttr("disabled");
+                },
+            })
+        });
+
+        $(function(){
+              $.ajax({
+                  type: 'post',
+                  contentType: "application/json; charset=UTF-8",
+                  url: '/get_models',
+                  error: function (xhr, err) {
+                      alert('请求失败，原因可能是：' + err + '！');
+                  },
+                  success: function (data, textStatus) {
+                      $.each(data, function(name,value) {
+                            var option = $("<option>").val(name).text(value);
+                            $('#select_model').append(option);
+                      });
+                  }
+              });
+
+              $('#select_model').change(function(){
+                    //获取当前选择模型id
+                    var model_id= $(this).children('option:selected').val(); //弹出select的值
+                    //修改session中模型id值
+                    $.ajax({
+                      type: 'post',
+                      contentType: "application/json; charset=UTF-8",
+                      url: '/set_session',
+                      data:JSON.stringify({"model_id":model_id}),
+                      error: function (xhr, err) {
+                          alert('请求失败，原因可能是：' + err + '！');
+                      },
+                      success: function (data, textStatus) {
+                         if(data='success') {
+                             console.info()
+                         }
+                      }
+                     });
+                });
+        });
     </script>
 {% endblock %}

@@ -33,7 +33,7 @@ def add():
     """将录入信息处理后存储到数据库中"""
 
     add_form = AddForm()
-    if request.method == 'POST':
+    if request.method == 'POST' and add_form.validate_on_submit():
         image = request.files['file'].read()
         PersonInfo.write_image(image, request.form['id_card'])
         face_list = get_image_face(image)
@@ -61,7 +61,7 @@ def add():
 @login_required
 def batch_add():
     form = BatchAddForm()
-    if request.method == 'POST':
+    if request.method == 'POST' and form.validate_on_submit():
         file_zip = request.files['file'].read()
         try:
             person_list = get_batch_info(string_to_file(file_zip))

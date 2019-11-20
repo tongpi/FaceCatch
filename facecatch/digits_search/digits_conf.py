@@ -20,6 +20,7 @@ def get_feature(image, job_id):
     data = {
             'job_id': job_id,
         }
+
     files = {
         'image_file': image
     }
@@ -47,3 +48,23 @@ def transform_wav(upload_file, job_id):
     predictions = get_feature(data, job_id=job_id)
     shutil.rmtree('./facecatch/digits_search/cache_file')
     return predictions
+
+
+def get_digits_models():
+    req = requests.get(settings.DISCERN_MODEL_URL)
+    try:
+        models = json.loads(req.content)['models']
+    except:
+        return None
+    model_dict = dict()
+    for model in models:
+        model_dict[model['job id']] = model['name']
+    return model_dict
+
+
+def get_first_model():
+    req = requests.get(settings.DISCERN_MODEL_URL)
+    models = json.loads(req.content)['models']
+    return models[-1]['id']
+
+

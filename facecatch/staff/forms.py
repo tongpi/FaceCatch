@@ -8,8 +8,8 @@ class AddForm(FlaskForm):
     添加人员信息
     """
     file = FileField("上传照片", validators=[DataRequired()])
-    name = StringField("姓名")
-    id_card = StringField("证件号")
+    name = StringField("姓名", validators=[DataRequired()])
+    id_card = StringField("证件号", validators=[DataRequired()])
     department = StringField("部门")
     description = StringField("描述")
     submit = SubmitField("提交")

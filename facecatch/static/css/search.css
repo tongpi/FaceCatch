@@ -51,3 +51,32 @@
     border-color: #ccc;
     text-decoration: none
 }
+
+
+#loading {
+    width: 500px;
+    position: absolute;
+    font-size: x-large;
+    line-height: 200px;
+    z-index: 999999;
+    text-align: center;
+    background: rgba(255,255,255,1);
+    top: 50%;
+    left: 50%;
+    margin-left: -250px;
+    margin-top: -200px;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+
+    -moz-box-shadow:2px 2px 5px #333333;
+    -webkit-box-shadow:2px 2px 5px #333333;
+    box-shadow: 7px 15px 30px #285a63;
+}
+
+
+
+
+
+
+
+

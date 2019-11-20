@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/static/dist/theme_blue/css/app.css">
     <link rel="stylesheet" href="/static/dist/theme_blue/css/app-extend.css">
     <link rel="stylesheet" href="/static/css/default.css">
+    <link href="/static/font/css/font-awesome.min.css" rel="stylesheet">
 
 
     <script src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
@@ -51,15 +52,15 @@
                   <a class="nav-link" id="show" href="{{ url_for("staff.show") }}"><i class="anticon icon-book"></i> 人员管理</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for("digits.digits_search") }}"><i class="anticon icon-star"></i> DIGITS搜索</a>
+                  <a class="nav-link" href="{{ url_for("digits.digits_search") }}"><i class="anticon icon-star"></i> 自定义模型识别</a>
                 </li>
-                <li class="nav-item">
-                  <a class="nav-link"
-                     onclick="if(confirm('您确定要进行图片预处理？\n（处理时间与图片数量成正比）'))
-                     {runPretreatment()}else{return false;}"
-                     style="cursor:pointer !important;"
-                  ><i class="anticon icon-clockcircle"></i> 预处理图片</a>
-                </li>
+{#                <li class="nav-item">#}
+{#                  <a class="nav-link"#}
+{#                     onclick="if(confirm('您确定要进行图片预处理？\n（处理时间与图片数量成正比）'))#}
+{#                     {runPretreatment()}else{return false;}"#}
+{#                     style="cursor:pointer !important;"#}
+{#                  ><i class="anticon icon-clockcircle"></i> 预处理图片</a>#}
+{#                </li>#}
               </ul>
               <div class="form-inline navbar-search ml-auto">
 

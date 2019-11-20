@@ -46,7 +46,10 @@ def get_image_face(image_file, base=None):
 
     data = {"data": [image]}
     # 发送请求调用facenet服务获取图像中包含的人脸信息
-    req = requests.post(url, json=data)
+    try:
+        req = requests.post(url, json=data)
+    except requests.exceptions.ConnectionError as e:
+        raise e
     try:
         face_list = json.loads(req.content.decode('utf-8'))['data']
     except:
@@ -202,7 +205,7 @@ def pretreatment_image(app):
         if image_path:
             # 获取所有图片的路径
             file_list = get_all_files(image_path, '.jpg', '.png')
-            file_list = file_list if file_list else get_all_image(image_path)
+            file_list = file_list + get_all_image(image_path)
 
             for file in file_list:
                 # 获取文件创建时间
