@@ -54,13 +54,13 @@
                 <li class="nav-item">
                   <a class="nav-link" href="{{ url_for("digits.digits_search") }}"><i class="anticon icon-star"></i> 自定义模型识别</a>
                 </li>
-{#                <li class="nav-item">#}
-{#                  <a class="nav-link"#}
-{#                     onclick="if(confirm('您确定要进行图片预处理？\n（处理时间与图片数量成正比）'))#}
-{#                     {runPretreatment()}else{return false;}"#}
-{#                     style="cursor:pointer !important;"#}
-{#                  ><i class="anticon icon-clockcircle"></i> 预处理图片</a>#}
-{#                </li>#}
+                <li class="nav-item">
+                  <a class="nav-link"
+                     onclick="if(confirm('您确定要进行图片预处理？\n（处理时间与图片数量成正比）'))
+                     {runPretreatment()}else{return false;}"
+                     style="cursor:pointer !important;"
+                  ><i class="anticon icon-clockcircle"></i> 预处理图片</a>
+                </li>
               </ul>
               <div class="form-inline navbar-search ml-auto">
 

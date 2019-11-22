@@ -202,23 +202,42 @@ def pretreatment_image(app):
         image_path = settings.PRETREATMENT_IMAGE_PATH
         unknown_image_path = []
 
+        # 文件夹下所有图片的数量
+        all_image_count = 0
+        # 标记为已知的图片数量
+        existed_image_num = 0
+        # 标记为未知的图片数量
+        unknown_process_num = 0
+        # 未识别的图片数量
+        pass_image_num = 0
+        # 未知人员库入库数量
+        save_unknown_num = 0
+        # 是否标记
+
+
+
         if image_path:
             # 获取所有图片的路径
             file_list = get_all_files(image_path, '.jpg', '.png')
-            file_list = file_list + get_all_image(image_path)
+            file_list = list(set(file_list + get_all_image(image_path)))
+
+            all_image_count = len(file_list)
+            print('发现图片：{}张'.format(all_image_count))
 
             for file in file_list:
+                is_mark = False
                 # 获取文件创建时间
                 file_create_time = get_file_create_time(file)
                 if max_create_time and file_create_time <= max_create_time:
+                    pass_image_num += 1
                     continue
                 with open(file, 'rb') as f:
                     file_b64 = base64.b64encode(f.read()).decode("utf-8")
                     face_list = get_image_face(file_b64, "true")
-                    for face_data in face_list:
+                    for index, face_data in enumerate(face_list):
                         face_id = face_data['faceID']
                         person, distance = get_same_person(face_id)
-                        if distance < 0.7:
+                        if distance < 0.8:
                             image_info = ImageInfo(
                                 label=person.name,
                                 create_time=file_create_time,
@@ -226,20 +245,26 @@ def pretreatment_image(app):
                             )
                             db.session.add(image_info)
                             db.session.commit()
+
+                            is_mark = True
                         else:
                             unknown_image_path.append(file)
+                if is_mark:
+                    existed_image_num += 1
+                    print('已标记已知图片数量：{}张'.format(existed_image_num))
 
         # 读取未识别的图片
         for unknown_image in set(unknown_image_path):
+            unknown_is_mark = False
             file_create_time = get_file_create_time(unknown_image)
             with open(unknown_image, 'rb') as f:
                 file_b64 = base64.b64encode(f.read()).decode("utf-8")
                 face_list = get_image_face(file_b64, "true")
-                for face_data in face_list:
+                for index, face_data in enumerate(face_list):
                     face_id = face_data['faceID']
                     # 从未知人员库进行比对
                     person, distance = get_same_person(face_id, "unknown")
-                    if distance < 0.7:
+                    if distance < 0.8:
                         # 存储至图片库
                         image_info = ImageInfo(
                             unknown_id=person.id,
@@ -249,6 +274,8 @@ def pretreatment_image(app):
                         )
                         db.session.add(image_info)
                         db.session.commit()
+
+                        unknown_is_mark = True
                         break
                     # 判定照片中只含有一个人的情况下，才会添加到未知人员库
                     elif len(face_list) == 1:
@@ -264,7 +291,20 @@ def pretreatment_image(app):
                         )
                         db.session.add(unknown_info)
                         db.session.commit()
+
+                        save_unknown_num += 1
+            if unknown_is_mark:
+                unknown_process_num += 1
+                print('已标记未知图片数量：{}张'.format(unknown_process_num))
+
     print("预处理完毕，时间： " + datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3])
+    print("本次总计标记{}张图片，已知人员标记{}张，未知人员标记{}张，添加未知人员信息{}个，未成功标记的图片数量：{}张".format(
+        existed_image_num + unknown_process_num,
+        existed_image_num,
+        unknown_process_num,
+        save_unknown_num,
+        all_image_count - existed_image_num - unknown_process_num
+    ))
     return None
 
 

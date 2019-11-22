@@ -38,8 +38,8 @@
                             <div class="form-group row mb-4 mt-5">
                                 <label for="inputPassword" class="col-sm-3 col-form-label text-right">{{ form.file.label }}：</label>
                                 <div class="col-sm-6">
-                                  {{ form.file(class='custom-file-input') }}
-                                    <label class="custom-file-label ml-2 mr-2" for="customFile">选择文件</label>
+                                  {{ form.file(class='custom-file-input', id='file') }}
+                                    <label class="custom-file-label ml-2 mr-2" id="select-image-name" for="customFile">选择文件</label>
                                 </div>
                             </div>
                             <div class="form-group row mb-4">
@@ -69,9 +69,15 @@
 
                 <div class="match-result">
                         <div class="title_box mt-4 mb-4">
+                            <h5>图片</h5>
+                            <span class="title_icon"></span>
+                        </div>
+
+                        <div class="title_box mt-4 mb-4" id="query_result_show">
                             <h5>识别结果</h5>
                             <span class="title_icon"></span>
                         </div>
+
                         <div class="row">
 {#                            {% if predictions %}#}
 {#                            <div class="col-sm-4">#}
@@ -133,6 +139,8 @@
                $("#image").append('<img src="" class="img" width="100%">');
                $(".img").attr("src",URL.createObjectURL(imgsrc));
 
+               var filePath=$(this).val();
+               document.getElementById('select-image-name').innerHTML = filePath;
             });
         });
 
@@ -156,8 +164,8 @@
                     {#$("#query_result").empty();#}
                     $.each(data, function (value) {
                         $("#query_result")
-                            .append("<li> <span class='font-weight-bold'>&nbsp;&nbsp;&nbsp; 名称：" + data[value][0] + "</span>" +
-                                "&nbsp;&nbsp;&nbsp; <span class='font-weight-bold'>预测值：" + data[value][1] + "% </span></li>");
+                            .append("<li> <span class='font-weight-bold name-span'>&nbsp;&nbsp;&nbsp; 名称：" + data[value][0] + "</span>" +
+                                "&nbsp;&nbsp;&nbsp; <span class='font-weight-bold predictive-span'>预测值：" + data[value][1].toFixed(2) + "% </span></li>");
                     })
                 },
                 complete: function () {

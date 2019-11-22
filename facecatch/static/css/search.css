@@ -74,7 +74,16 @@
 }
 
 
+#query_result_show{
+    position: absolute;
+    right: 500px;
+    top: 300px;
+}
 
+.predictive-span, .name-span{
+    width: 250px;
+    display: inline-block;
+}
 
 
 

@@ -62,6 +62,8 @@ body{
 .search_Result ul li{
     line-height: 70px;
     font-size:16px;
+    left: 150px;
+    position: relative;
 }
 .nav-link-color{
     display: block;
