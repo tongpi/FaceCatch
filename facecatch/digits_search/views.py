@@ -2,11 +2,13 @@ import flask
 import base64
 import json
 
+import requests
 from flask import request, render_template, session
 from flask.json import jsonify
 from flask_cas import login_required
 
 from facecatch.digits_search.forms import UploadForm, UploadSoundForm
+from facecatch.log import logger
 from .digits_conf import get_feature, transform_wav, get_digits_models, get_first_model
 
 blueprint = flask.Blueprint('digits', __name__)
@@ -31,8 +33,10 @@ def digits_search():
 
     predictions = get_feature(upload_file, digits_model_id)
     if predictions:
+        logger.info("自定义模型识别成功！")
         return render_template('search/digits_search.html', form=upload_form, predictions=predictions, image=upload_file, base64=base64)
     else:
+        logger.info("模型未能识别出此图片，请使用与模型同类型的图片。")
         match_result = '此图片未识别，请使用与模型同类型的图片。'
 
     return render_template(
@@ -87,7 +91,11 @@ def get_models():
         session.pop('model_id')
     except:
         pass
-    model_dict = get_digits_models()
+    try:
+        model_dict = get_digits_models()
+    except requests.exceptions.ConnectionError as e:
+        logger.error("模型训练平台连接失败，请检查模型训练平台的启动状态以及在此服务中的地址配置！")
+        raise e
 
     if not session.get('model_id'):
         session['model_id'] = get_first_model()

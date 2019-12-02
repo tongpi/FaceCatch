@@ -19,6 +19,8 @@ from flask import session, redirect, url_for, request
 import settings
 from facecatch.database import db
 from .models import PersonInfo, ImageInfo, UnknownPersonInfo
+from facecatch.log import logger
+
 
 BAD_EUCLIDEAN_DISTANCE = 1
 
@@ -49,14 +51,14 @@ def get_image_face(image_file, base=None):
     try:
         req = requests.post(url, json=data)
     except requests.exceptions.ConnectionError as e:
+        logger.error("人脸识别服务连接失败，请检服务的运行状态以及地址的配置！")
         raise e
     try:
         face_list = json.loads(req.content.decode('utf-8'))['data']
-    except:
-        return []
-    if face_list is not None:
-        return face_list
-    return []
+    except Exception as e:
+        logger.error("未能获得人脸特征！错误：{}".format(e))
+        face_list = []
+    return face_list
 
 
 def get_same_person(face_id, model=None):
@@ -115,7 +117,8 @@ def get_batch_info(file):
         excel_file = file_zip.open('{}face.xlsx'.format(file_zip.namelist()[0]))
     except KeyError:
         excel_file = file_zip.open('{}face.xls'.format(file_zip.namelist()[0]))
-    except Exception:
+    except Exception as e:
+        logger.error("未能获得正确的excel人员信息表文件！")
         return None
 
     # 读取excel表的数据
@@ -132,6 +135,8 @@ def get_batch_info(file):
             result_dict['image'] = file_zip.open('face/image/{}.png'.format(excel_data[2])).read()
         except KeyError:
             result_dict['image'] = file_zip.open('face/image/{}.jpg'.format(excel_data[2])).read()
+        except Exception as e:
+            logger.error("批上传文件中的文件缺失或者目录结构不正确！处理失败。")
         PersonInfo.write_image(result_dict['image'], result_dict['id_card'])
         result.append(result_dict)
 
@@ -166,7 +171,7 @@ def login_required(func):
 
 def get_file_create_time(file):
     """获取文件创建时间"""
-    return str(os.path.getctime(file))
+    return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(os.path.getctime(file)))
 
 
 def get_all_files(path, suffix1, suffix2):
@@ -193,6 +198,7 @@ def get_create_time():
 # 预处理图片,存入数据库中
 def pretreatment_image(app):
     with app.app_context():
+        logger.info("开始进行图片预处理！")
         try:
             # 获取预处理图片表中最大的创建时间，用于筛选处理图片范围
             max_create_time = ImageInfo.query.order_by(db.desc("create_time")).first().create_time
@@ -214,15 +220,13 @@ def pretreatment_image(app):
         save_unknown_num = 0
         # 是否标记
 
-
-
         if image_path:
             # 获取所有图片的路径
             file_list = get_all_files(image_path, '.jpg', '.png')
             file_list = list(set(file_list + get_all_image(image_path)))
 
             all_image_count = len(file_list)
-            print('发现图片：{}张'.format(all_image_count))
+            logger.info('文件夹共有图片：{}张'.format(all_image_count))
 
             for file in file_list:
                 is_mark = False
@@ -251,7 +255,7 @@ def pretreatment_image(app):
                             unknown_image_path.append(file)
                 if is_mark:
                     existed_image_num += 1
-                    print('已标记已知图片数量：{}张'.format(existed_image_num))
+                    logger.info('已标记已知图片数量：{}张'.format(existed_image_num))
 
         # 读取未识别的图片
         for unknown_image in set(unknown_image_path):
@@ -295,16 +299,18 @@ def pretreatment_image(app):
                         save_unknown_num += 1
             if unknown_is_mark:
                 unknown_process_num += 1
-                print('已标记未知图片数量：{}张'.format(unknown_process_num))
+                logger.info('已标记未知图片数量：{}张'.format(unknown_process_num))
 
-    print("预处理完毕，时间： " + datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3])
-    print("本次总计标记{}张图片，已知人员标记{}张，未知人员标记{}张，添加未知人员信息{}个，未成功标记的图片数量：{}张".format(
-        existed_image_num + unknown_process_num,
-        existed_image_num,
-        unknown_process_num,
-        save_unknown_num,
-        all_image_count - existed_image_num - unknown_process_num
-    ))
+    logger.info("预处理完毕，本次总计标记{}张图片，"
+                "已知人员标记{}张，未知人员标记{}张，"
+                "添加未知人员信息{}个，"
+                "未成功标记的图片数量：{}张".format(
+                    existed_image_num + unknown_process_num,
+                    existed_image_num,
+                    unknown_process_num,
+                    save_unknown_num,
+                    all_image_count - existed_image_num - unknown_process_num
+                ))
     return None
 
 

@@ -39,3 +39,8 @@ PRETREATMENT_MINUTE = int(PRETREATMENT_TIME.split(":")[1])
 PERSON_STORAGE_ADDRESS = os.environ.get('PERSON_STORAGE_ADDRESS',
                                         os.path.abspath(os.path.dirname(__file__))
                                         .split('FaceCatch')[0] + 'FaceCatch/facecatch/static/person_images')
+
+LOG_FILE_DIR = os.environ.get('LOG_FILE_DIR', '')
+LOG_FILE_NAME = os.environ.get('LOG_FILE_NAME', 'face_log.log')
+LOG_FILE_PATH = os.environ.get('LOG_FILE_PATH', os.path.join(LOG_FILE_DIR, LOG_FILE_NAME))
+

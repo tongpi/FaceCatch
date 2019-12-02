@@ -1,12 +1,14 @@
 import ssl
 
-from flask import Flask
+from flask import Flask, request
 from flask_cas import CAS
 from flask_restful import Api
 
 from facecatch.database import db
 import settings
 from apscheduler.schedulers.background import BackgroundScheduler
+
+from facecatch.log import logger
 from facecatch.utils import pretreatment_image
 from facecatch.search.views import ImageListResource, ImageResource
 
@@ -42,6 +44,7 @@ if settings.PRETREATMENT_IMAGE_PATH:
 @webapp.before_first_request
 def create_db():
     db.create_all()
+    logger.info("IP为{} 进行访问。".format(request.remote_addr))
 
 
 from facecatch import views

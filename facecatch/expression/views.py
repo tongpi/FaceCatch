@@ -3,6 +3,7 @@ import flask
 
 from flask import render_template, request
 
+from facecatch.log import logger
 from facecatch.search.forms import UploadForm
 from facecatch.utils import get_image_face, get_person_emotion, FACENET_EMOTION_DICT
 
@@ -17,8 +18,10 @@ def expression():
         face_list = get_image_face(upload_file)
         if face_list:
             emotion = get_person_emotion(face_list[0]['emotion'])[0]
+            logger.info("表情识别成功！")
         else:
             emotion = 'unknown'
+            logger.info("未检测出表情！")
         return render_template('expression/expression.html',
                                form=upload_form,
                                image=upload_file,

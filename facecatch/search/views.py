@@ -10,6 +10,7 @@ from flask_restful import Resource
 from flask_cas import CAS
 
 from facecatch.database import db
+from facecatch.log import logger
 from facecatch.models import UnknownPersonInfo, PersonInfo
 from facecatch.search.forms import UploadForm
 from facecatch.utils import get_image_face, get_same_person, get_same_image, pretreatment_image, get_create_time
@@ -23,7 +24,6 @@ cas = CAS()
 def home():
     """将上传的图片进行比对"""
     session['username'] = cas.username
-
     upload_form = UploadForm()
     return render_template('search/search.html',
                            form=upload_form,
@@ -60,7 +60,6 @@ def pretreatment():
     app = current_app._get_current_object()
     pre_job = Thread(target=pretreatment_image, args=[app])
     pre_job.start()
-    flash('正在预处理中，请稍后。。。')
     return redirect('/')
 
 
@@ -74,22 +73,27 @@ class ImageListResource(Resource):
         if request.get_json():
             path = request.get_json()['path']
         else:
+            logger.error("获取图片列表：请求中的数据格式不是JSON格式！")
             return jsonify({"error": "请发送json格式的数据。"})
 
         try:
             with open(path, 'rb') as f:
                 data = f.read()
         except FileNotFoundError:
+            logger.error("获取图片列表：根据请求中的图片地址未找到图片！")
             return jsonify({"error": "传入的路径不正确。"})
 
         face_list = get_image_face(data)
         if face_list:
             person, distance = get_same_person(face_list[0]['faceID'])
             if distance < 0.8:
+                logger.info("获取图片列表成功！（已知人员）")
                 return get_same_image(person.name)
             person, distance = get_same_person(face_list[0]['faceID'], "unknown")
             if distance < 0.8:
+                logger.info("获取图片列表成功！（未知人员）")
                 return get_same_image(person.name)
+        logger.error("获取图片列表：传入的照片未能检测出人脸特征或人脸特征极不明显！")
         return jsonify({"error": "传入的照片不符合规范"})
 
 

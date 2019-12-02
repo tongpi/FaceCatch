@@ -6,6 +6,7 @@ from flask_cas import login_required
 
 import settings
 from facecatch.database import db
+from facecatch.log import logger
 from facecatch.models import PersonInfo
 from facecatch.staff.forms import AddForm, UpdateForm, BatchAddForm
 from facecatch.utils import get_image_face, get_batch_info, string_to_file, get_create_time
@@ -51,7 +52,7 @@ def add():
 
         db.session.add(person)
         db.session.commit()
-
+        logger.info("成功添加人员信息：{}-{}".format(request.form['name'], request.form['id_card']))
         return redirect(url_for('staff.show'))
 
     return render_template('staff/add.html', form=add_form)
@@ -66,7 +67,8 @@ def batch_add():
         try:
             person_list = get_batch_info(string_to_file(file_zip))
         except:
-            flash('上传的zip文件不符合规范，请按示例文件重新生成格式正确的zip文件')
+            flash('上传的zip文件不符合规范，请按示例文件重新生成格式正确的zip文件！')
+            logger.error("上传的zip文件不符合规范，请按示例文件重新生成格式正确的zip文件！")
             person_list = []
 
         person_data = []
@@ -88,8 +90,10 @@ def batch_add():
         try:
             db.session.add_all(person_data)
             db.session.commit()
-        except:
+            logger.info("批量录入人员信息成功！")
+        except Exception as e:
             flash('用户信息错误')
+            logger.error("批量录入人员信息失败，错误：{}".format(e))
 
         return redirect(url_for('staff.show'))
 
@@ -122,13 +126,18 @@ def detail(person_id):
 @login_required
 def delete_person():
     """删除指定人员信息"""
-    data = request.get_data().decode()
-    person_id = data.split('=')[1]
-    person = PersonInfo.query.filter(PersonInfo.id == int(person_id)).first()
-    person.delete_person_jpg()
-    db.session.delete(person)
-    db.session.commit()
-    return "success"
+    try:
+        data = request.get_data().decode()
+        person_id = data.split('=')[1]
+        person = PersonInfo.query.filter(PersonInfo.id == int(person_id)).first()
+        person.delete_person_jpg()
+        db.session.delete(person)
+        db.session.commit()
+        logger.info("删除人员信息成功！人员ID为：{}".format(person_id))
+        return "success"
+    except Exception as e:
+        logger.error("删除人员信息失败！原因：{}".format(e))
+        return "fail"
 
 
 @blueprint.route('/update_person/<person_id>', methods=['GET', 'POST'])
@@ -161,6 +170,7 @@ def update_person(person_id):
 
         db.session.commit()
         flash('更新成功')
+        logger.info("更新人员信息成功！{}-{}".format(person.name, person.id_card))
         return redirect(url_for('staff.show'))
 
     with open(person.image, 'rb') as f:
@@ -173,5 +183,6 @@ def update_person(person_id):
 def download_file():
     response = make_response(send_from_directory('facecatch/static/sample_file', filename='face.zip', as_attachment=True))
     response.headers["Content-Disposition"] = "attachment; filename={}".format('face.zip'.encode().decode('latin-1'))
+    logger.info("下载示例文件。")
     return response
 

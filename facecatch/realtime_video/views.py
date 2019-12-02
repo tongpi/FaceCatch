@@ -3,6 +3,7 @@ import flask
 from flask import render_template, jsonify, request
 from flask_cas import login_required
 
+from facecatch.log import logger
 from facecatch.utils import get_same_person, get_person_emotion, FACENET_EMOTION_DICT, get_image_face
 
 blueprint = flask.Blueprint('realtime_video', __name__)
@@ -33,4 +34,5 @@ def recognize():
 @login_required
 def view_video():
     """在线识别跳转"""
+    logger.info("开始进行在线识别！")
     return render_template('realtime_video/search.html')
