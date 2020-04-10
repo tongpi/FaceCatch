@@ -3,108 +3,117 @@
 {% block content %}
 
     <content class="app-content">
-      <div class="container">
-        <div class="card pl-3 pr-3 mt-3 pb-5">
-            <div class="card-body">
+        <div class="container">
+            <div class="card pl-3 pr-3 mt-3 pb-5">
+                <div class="card-body">
 
-                <div class="clearfix pt-3 pb-3">
+                    <div class="clearfix pt-3 pb-3">
                   <span class="float-left">
                       <h5><i class="anticon icon-home"></i> 修改信息</h5>
                   </span>
-                </div>
+                    </div>
 
-                <hr>
+                    <hr>
 
-                <div class="row pt-3 pl-3">
-                    <div class="col-sm-2">
-                        <div class="fakeimg_cont" id="image">
-                        <img class="img" src="data:image/png;base64, {{ person.person_image }}" width="180px">
+                    <div class="row pt-3 pl-3">
+                        <div class="col-sm-2">
+                            <div class="fakeimg_cont" id="image">
+                                <img class="img" src="{{ person.person_image }}" width="180px">
+                            </div>
+                        </div>
+                        <div class="col-sm-9">
+                            <form method="post" enctype="multipart/form-data" novalidate="novalidate">
+                                {{ form.csrf_token }}
+
+                                <div class="form-group row mb-4" id="image">
+                                    <label for="inputPassword"
+                                           class="col-sm-3 col-form-label text-right">{{ form.file.label }}：</label>
+                                    <div class="col-sm-6">
+                                        {{ form.file(class='custom-file-input') }}
+                                        <label id="update-image-label" class="custom-file-label ml-2 mr-2" for="customFile">选择文件</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-4">
+                                    <label for="inputPassword1"
+                                           class="col-sm-3 col-form-label text-right">{{ form.name.label }}：</label>
+                                    <div class="col-sm-6">
+                                        {{ form.name(class='form-control', placeholder=person.name) }}
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-4">
+                                    <label for="inputPassword"
+                                           class="col-sm-3 col-form-label text-right">{{ form.department.label }}：</label>
+                                    <div class="col-sm-6">
+                                        {{ form.department(class='form-control', placeholder=person.department) }}
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-4">
+                                    <label for="inputPassword"
+                                           class="col-sm-3 col-form-label text-right">{{ form.id_card.label }}：</label>
+                                    <div class="col-sm-6">
+                                        {{ form.id_card(class='form-control', placeholder=person.id_card) }}
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-4">
+                                    <label for="inputPassword"
+                                           class="col-sm-3 col-form-label text-right">{{ form.description.label }}：</label>
+                                    <div class="col-sm-6">
+                                        {{ form.description(class='form-control', placeholder=person.description) }}
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-3 offset-sm-4">
+                                        {{ form.submit(class='btn btn-primary mr-3 px-4 ') }}
+                                    </div>
+                                </div>
+
+                            </form>
                         </div>
                     </div>
-                    <div class="col-sm-9">
-                        <form method="post" enctype="multipart/form-data" novalidate="novalidate">
-                            {{ form.csrf_token }}
+                    <script>
+                        $('#file').change(function (e) {
+                            let fileMsg = e.currentTarget.files;
+                            $('#update-image-label')[0].innerHTML = fileMsg[0].name;
+                        })
+                    </script>
 
-                          <div class="form-group row mb-4"  id="image">
-                            <label for="inputPassword" class="col-sm-3 col-form-label text-right">{{ form.file.label }}：</label>
-                            <div class="col-sm-6">
-                              {{ form.file(class='custom-file-input') }}
-                                <label class="custom-file-label ml-2 mr-2" for="customFile">选择文件</label>
-                            </div>
-                          </div>
-                          <div class="form-group row mb-4">
-                            <label for="inputPassword1" class="col-sm-3 col-form-label text-right">{{ form.name.label }}：</label>
-                            <div class="col-sm-6">
-                              {{ form.name(class='form-control', placeholder=person.name) }}
-                            </div>
-                          </div>
-                          <div class="form-group row mb-4">
-                            <label for="inputPassword" class="col-sm-3 col-form-label text-right">{{ form.department.label }}：</label>
-                            <div class="col-sm-6">
-                              {{ form.department(class='form-control', placeholder=person.department) }}
-                            </div>
-                          </div>
-                          <div class="form-group row mb-4">
-                            <label for="inputPassword" class="col-sm-3 col-form-label text-right">{{ form.id_card.label }}：</label>
-                            <div class="col-sm-6">
-                              {{ form.id_card(class='form-control', placeholder=person.id_card) }}
-                            </div>
-                          </div>
-                          <div class="form-group row mb-4">
-                            <label for="inputPassword" class="col-sm-3 col-form-label text-right">{{ form.description.label }}：</label>
-                            <div class="col-sm-6">
-                              {{ form.description(class='form-control', placeholder=person.description) }}
-                            </div>
-                          </div>
-                          <div class="form-group row">
-                            <div class="col-sm-3 offset-sm-4">
-                                {{ form.submit(class='btn btn-primary mr-3 px-4 ') }}
-                            </div>
-                          </div>
-
-                        </form>
-                    </div>
                 </div>
-
-
-
             </div>
         </div>
-      </div>
     </content>
 
 
 
     <script>
-        $(function(){
-            $("#file").change(function(){
+        $(function () {
+            $("#file").change(function () {
                 image = $(this);
 
-                imgsrc= image[0].files[0];
-                var data=new FormData();
-                data.append('image_file',imgsrc);
+                imgsrc = image[0].files[0];
+                var data = new FormData();
+                data.append('image_file', imgsrc);
                 $.ajax({
-                  type: 'post',
-                  url: '{{ url_for('staff.inspect_image') }}',
-                  data:data,
-                  cache:false,
-                  processData:false,
-                  contentType:false,
-                  success: function (data) {
-                     console.log(data);
-                        if(data != 'success'){
-                            image.val("") ;
+                    type: 'post',
+                    url: '{{ url_for('staff.inspect_image') }}',
+                    data: data,
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        console.log(data);
+                        if (data != 'success') {
+                            image.val("");
                             $(".img").remove();
-                            alert("照片不符合要求请重新选择上传。");
+                            alert("照片未包含人脸，请重新选择上传。");
                             window.location.reload();
 
-                        }else{
-                           $(".img").remove();
-                           $("#image").append('<img src="" class="img" width="100px">');
-                           $(".img").attr("src",URL.createObjectURL(imgsrc));
+                        } else {
+                            $(".img").remove();
+                            $("#image").append('<img src="" class="img" width="100px">');
+                            $(".img").attr("src", URL.createObjectURL(imgsrc));
                         }
-                  }
-                 });
+                    }
+                });
             });
         })
 

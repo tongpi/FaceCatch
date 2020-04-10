@@ -1,5 +1,7 @@
 import base64
 import flask
+import pandas
+import requests
 
 from flask import request, render_template, redirect, url_for, flash, make_response, send_from_directory
 from flask_cas import login_required
@@ -63,29 +65,82 @@ def add():
 def batch_add():
     form = BatchAddForm()
     if request.method == 'POST' and form.validate_on_submit():
-        file_zip = request.files['file'].read()
-        try:
-            person_list = get_batch_info(string_to_file(file_zip))
-        except:
-            flash('上传的zip文件不符合规范，请按示例文件重新生成格式正确的zip文件！')
-            logger.error("上传的zip文件不符合规范，请按示例文件重新生成格式正确的zip文件！")
-            person_list = []
 
         person_data = []
-        for person in person_list:
-            face_list = get_image_face(person['image'])
-            if len(face_list) == 1:
-                person_data.append(PersonInfo(
-                    name=person['name'],
-                    department=person['department'],
-                    id_card=person['id_card'],
-                    description=person['description'],
-                    face_id=str(face_list[0]['faceID']),
-                    image=settings.PERSON_STORAGE_ADDRESS + '/{}.jpg'.format(person['id_card']),
-                    create_time=get_create_time(),
-                ))
-            else:
-                flash('证件号为{}的用户照片不符合规范'.format(person['id_card']))
+        if request.files['file'].filename.endswith(".zip"):
+            file_zip = request.files['file'].read()
+            try:
+                person_list = get_batch_info(string_to_file(file_zip))
+            except:
+                flash('上传的zip文件不符合规范，请按示例文件重新生成格式正确的zip文件！')
+                logger.error("上传的zip文件不符合规范，请按示例文件重新生成格式正确的zip文件！")
+                person_list = []
+
+            for person in person_list:
+                face_list = get_image_face(person['image'])
+                if isinstance(face_list, str):
+                    return redirect(url_for('facecatch.error', data=face_list))
+                if len(face_list) == 1:
+                    person_data.append(PersonInfo(
+                        name=person['name'],
+                        department=person['department'],
+                        id_card=person['id_card'],
+                        description=person['description'],
+                        face_id=str(face_list[0]['faceID']),
+                        image=settings.PERSON_STORAGE_ADDRESS + '/{}.jpg'.format(person['id_card']),
+                        create_time=get_create_time(),
+                    ))
+                else:
+                    logger.error('证件号为{}的用户照片不符合规范'.format(person['id_card']))
+                    flash('证件号为{}的用户照片不符合规范'.format(person['id_card']))
+        elif request.files['file'].filename.endswith(".xlsx") or request.files['file'].filename.endswith(".xls"):
+            excel_datas = pandas.read_excel(request.files['file']).values
+            for excel_data in excel_datas:
+                is_image = True
+                try:
+                    image = requests.get(excel_data[5]).content
+                    if image[:15] == b'<!doctype html>':
+                        logger.error('地址为{}的用户照片请求不到资源！'.format(excel_data[5]))
+                        is_image = False
+                except Exception:
+                    logger.error('地址为{}的用户照片请求不到资源！'.format(excel_data[5]))
+                    is_image = False
+                if is_image:
+                    face_list = get_image_face(image)
+                    if isinstance(face_list, str):
+                        return redirect(url_for('facecatch.error', data=face_list))
+                    if len(face_list) == 1:
+                        PersonInfo.write_image(image, excel_data[0])
+                        person_data.append(PersonInfo(
+                            name=excel_data[1],
+                            department=excel_data[2],
+                            id_card=excel_data[3],
+                            description=str(excel_data[4])[:30],
+                            face_id=str(face_list[0]['faceID']),
+                            image=settings.PERSON_STORAGE_ADDRESS + '/{}.jpg'.format(excel_data[0]),
+                            create_time=get_create_time(),
+                        ))
+                    else:
+                        logger.error('图片ID为{}的用户照片不符合规范'.format(excel_data[0]))
+                        person_data.append(PersonInfo(
+                            name=excel_data[1],
+                            department=excel_data[2],
+                            id_card=excel_data[3],
+                            description=str(excel_data[4])[:30],
+                            face_id='',
+                            image='',
+                            create_time=get_create_time(),
+                        ))
+                else:
+                    person_data.append(PersonInfo(
+                        name=excel_data[1],
+                        department=excel_data[2],
+                        id_card=excel_data[3],
+                        description=str(excel_data[4])[:30],
+                        face_id='',
+                        image='',
+                        create_time=get_create_time(),
+                    ))
 
         try:
             db.session.add_all(person_data)
@@ -104,11 +159,38 @@ def batch_add():
 @login_required
 def show():
     """返回录入信息展示页面"""
-    persons = PersonInfo.query.filter().all()
+
+    page = int(request.args.get('page', 1))
+    per_page = 12
+
+    paginate = PersonInfo.query.filter().order_by(PersonInfo.id).paginate(page=page, per_page=per_page, error_out=False)
+    persons = paginate.items
     for person in persons:
-        with open(person.image, 'rb') as f:
-            person.person_image = base64.b64encode(f.read()).decode()
-    return render_template('staff/show.html', persons=persons)
+        if person.image == '':
+            person.person_image = url_for('static', filename='image/not_found.png')
+        else:
+            with open(person.image, 'rb') as f:
+                person.person_image = "data:image/png;base64, {}".format(base64.b64encode(f.read()).decode())
+    return render_template('staff/show.html', persons=persons, paginate=paginate)
+
+
+@blueprint.route('/show/unusual', methods=['GET'])
+@login_required
+def unusual_show():
+    """返回录入信息展示页面"""
+
+    page = int(request.args.get('page', 1))
+    per_page = 12
+
+    paginate = PersonInfo.query.filter(PersonInfo.image == '').order_by(PersonInfo.id).paginate(page=page, per_page=per_page, error_out=False)
+    persons = paginate.items
+    for person in persons:
+        if person.image == '':
+            person.person_image = url_for('static', filename='image/not_found.png')
+        else:
+            with open(person.image, 'rb') as f:
+                person.person_image = "data:image/png;base64, {}".format(base64.b64encode(f.read()).decode())
+    return render_template('staff/unusual.html', persons=persons, paginate=paginate)
 
 
 @blueprint.route('/detail/<person_id>', methods=['GET', 'POST'])
@@ -117,8 +199,11 @@ def detail(person_id):
     """返回录入信息详情页"""
 
     person = PersonInfo.query.filter(PersonInfo.id == person_id).first()
-    with open(person.image, 'rb') as f:
-        person.person_image = base64.b64encode(f.read()).decode()
+    if person.image == '':
+        person.person_image = url_for('static', filename='image/not_found.png')
+    else:
+        with open(person.image, 'rb') as f:
+            person.person_image = "data:image/png;base64, {}".format(base64.b64encode(f.read()).decode())
     return render_template('staff/detail.html', person=person)
 
 
@@ -153,7 +238,6 @@ def update_person(person_id):
         if request.form['name']:
             person.name = request.form['name']
         if request.form['id_card']:
-            person.update_person_jpg(request.form['id_card'])
             person.id_card = request.form['id_card']
         if request.form['description']:
             person.description = request.form['description']
@@ -163,8 +247,7 @@ def update_person(person_id):
         if 'file' not in request.form:
             image = request.files['file'].read()
             person.delete_person_jpg()
-            person.write_image(image, person.id_card)
-            person.image = person.person_image_path(person.id_card)
+            person.image = person.gen_image_card(image)
 
             person.face_id = str(get_image_face(image)[0]['faceID'])
 
@@ -173,8 +256,11 @@ def update_person(person_id):
         logger.info("更新人员信息成功！{}-{}".format(person.name, person.id_card))
         return redirect(url_for('staff.show'))
 
-    with open(person.image, 'rb') as f:
-        person.person_image = base64.b64encode(f.read()).decode()
+    if person.image == '':
+        person.person_image = url_for('static', filename='image/not_found.png')
+    else:
+        with open(person.image, 'rb') as f:
+            person.person_image = "data:image/png;base64, {}".format(base64.b64encode(f.read()).decode())
     return render_template('staff/update.html', person=person, form=update_form)
 
 

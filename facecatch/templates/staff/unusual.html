@@ -10,17 +10,9 @@
     <content class="app-content">
         <div class="container-1400 pt-3">
 
-            <div class="input-group w-35 mb-3">
-                <a href="{{ url_for("staff.add") }}">
-                    <button type="button" class="btn btn-primary mr-3"><i class="anticon icon-form"></i> 信息录入</button>
-                </a>
-
-                <a href="{{ url_for("staff.batch_add") }}">
-                    <button type="button" class="btn btn-primary mr-3"><i class="anticon icon-copy1"></i> 批量录入</button>
-                </a>
-
-                <a href="{{ url_for("staff.unusual_show") }}">
-                    <button type="button" class="btn btn-danger"><i class="anticon icon-edit"></i> 查看异常人员</button>
+            <div class="input-group w-25 mb-3">
+                <a href="{{ url_for("staff.show") }}">
+                    <button type="button" class="btn btn-danger"><i class="anticon icon-copy1"></i> 查看所有人员</button>
                 </a>
             </div>
 
@@ -49,7 +41,7 @@
                                       <li><a href="{{ url_for('staff.detail', person_id=person.id) }}"><h6>{{ person.name }}</h6></a></li>
                                       <li>部门：{{ person.department }}</li>
                                       <li>证件号：{{ person.id_card }}</li>
-                                      <li style="max-width: 200px">描述：{{ person.description }}</li>
+                                      <li>描述：{{ person.description }}</li>
                                       <li>创建时间：{{ person.create_time }}</li>
                                   </ul>
 
@@ -79,28 +71,28 @@
             {% if paginate.total > 12 %}
                 <div class="pagination pagination-centered" style="display: block;">
                     <ul>
-                        <li class="page-link"><a href="{{ url_for('staff.show', page=1) }}">首页</a></li>
+                        <li class="page-link"><a href="{{ url_for('staff.unusual_show', page=1) }}">首页</a></li>
                         {% if paginate.has_prev %}
-                            <li class="page-link"><a href="{{ url_for('staff.show', page=paginate.prev_num) }}">上一页</a>
+                            <li class="page-link"><a href="{{ url_for('staff.unusual_show', page=paginate.prev_num) }}">上一页</a>
                             </li>
                         {% endif %}
                         {% for p in paginate.iter_pages() %}
                             {% if p %}
                                 {% if paginate.page == p %}
-                                    <li class="page-link disable-some"><a href="{{ url_for('staff.show', page=p) }}"
+                                    <li class="page-link disable-some"><a href="{{ url_for('staff.unusual_show', page=p) }}"
                                                                           style="color:dimgrey">{{ p }}</a></li>
                                 {% else %}
-                                    <li class="page-link"><a href="{{ url_for('staff.show', page=p) }}">{{ p }}</a></li>
+                                    <li class="page-link"><a href="{{ url_for('staff.unusual_show', page=p) }}">{{ p }}</a></li>
                                 {% endif %}
                             {% else %}
                                 <li class="page-link disable-some"><a href="#">&hellip;</a></li>
                             {% endif %}
                         {% endfor %}
                         {% if paginate.has_next %}
-                            <li class="page-link"><a href="{{ url_for('staff.show', page=paginate.next_num) }}">下一页</a>
+                            <li class="page-link"><a href="{{ url_for('staff.unusual_show', page=paginate.next_num) }}">下一页</a>
                             </li>
                         {% endif %}
-                        <li class="page-link"><a href="{{ url_for('staff.show', page=paginate.pages) }}">尾页</a>
+                        <li class="page-link"><a href="{{ url_for('staff.unusual_show', page=paginate.pages) }}">尾页</a>
                         </li>
                     </ul>
 

@@ -1,5 +1,5 @@
 import flask
-from flask import jsonify, session, request, current_app
+from flask import jsonify, session, request, current_app, render_template
 from flask_cas import login_required
 from flask_cas.cas_urls import create_cas_logout_url
 
@@ -30,3 +30,11 @@ def logout():
             current_app.config['CAS_LOGOUT_ROUTE'])
 
     return flask.redirect(redirect_url)
+
+
+@blueprint.route('/error', methods=['GET'])
+@login_required
+def error():
+    data = request.args['data']
+    # data = "人脸识别服务连接失败，请检服务的运行状态以及地址的配置！"
+    return render_template("error.html", data=data)

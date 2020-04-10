@@ -6,3 +6,6 @@
 
 # msn
 /msn/
+
+# log
+*.log

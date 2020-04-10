@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>人工智能服务平台</title>
+    <title>人工智能平台Demo</title>
     <link rel="icon" type="image/png" href="/static/image/logo.png">
-
 
     <link rel="stylesheet" href="/static/dist/theme_blue/css/app.css">
     <link rel="stylesheet" href="/static/dist/theme_blue/css/app-extend.css">
@@ -14,80 +13,75 @@
 
     <script src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
 
-
-    <script src="/static/dist/js/jquery.min.js"></script>
-{#    <script src="/static/dist/js/popper.min.js"></script>#}
-{#    <script src="/static/dist/js/bootstrap.min.js"></script>#}
-{#    <script src="/static/dist/js/bootstrap-table.min.js"></script>#}
-{#    <script src="/static/dist/js/bootstrap-table-zh-CN.min.js"></script>#}
-{#    <script src="/static/dist/js/perfect-scrollbar.min.js"></script>#}
-{#    <script src="/static/dist/js/app.js"></script>#}
-
+    <script src="{{ url_for('static', filename='face/bootstrap.js') }}"></script>
 
     {% block head %}
     {% endblock %}
 </head>
 <body class="app" data-menu="layoutTop">
 
-    <layout class="app-layout">
+<layout class="app-layout">
 
-        <header class="app-header">
-          <nav class="navbar navbar-expand-sm navbar-dark">
-            <a class="navbar-brand app-logo" href="{{ url_for("search.home") }}">人工智能服务平台</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
+    <header class="app-header">
+        <nav class="navbar navbar-expand-sm navbar-dark">
+            <a class="navbar-brand app-logo" href="{{ url_for("search.home") }}">人工智能平台Demo</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+                    aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarColor01">
-              <ul class="navbar-nav header-menu">
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for("search.home") }}"><i class="anticon icon-smile-circle"></i> 人脸识别</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for("realtime_video.view_video") }}" ><i class="anticon icon-cloud"></i> 在线识别</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for("expression.expression") }}" ><i class="anticon icon-smileo"></i> 表情识别</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" id="show" href="{{ url_for("staff.show") }}"><i class="anticon icon-book"></i> 人员管理</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for("digits.digits_search") }}"><i class="anticon icon-star"></i> 自定义模型识别</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link"
-                     onclick="if(confirm('您确定要进行图片预处理？\n（处理时间与图片数量成正比）'))
+                <ul class="navbar-nav header-menu">
+                    {#                <li class="nav-item">#}
+                    {#                  <a class="nav-link" href="{{ url_for("search.home") }}"><i class="anticon icon-smile-circle"></i> 人脸识别</a>#}
+                    {#                </li>#}
+                    {#                <li class="nav-item">#}
+                    {#                  <a class="nav-link" href="{{ url_for("realtime_video.view_video") }}" ><i class="anticon icon-cloud"></i> 在线识别</a>#}
+                    {#                </li>#}
+                    {#                <li class="nav-item">#}
+                    {#                  <a class="nav-link" href="{{ url_for("expression.expression") }}" ><i class="anticon icon-smileo"></i> 表情识别</a>#}
+                    {#                </li>#}
+                    <li class="nav-item">
+                        <a class="nav-link" id="show" href="{{ url_for("staff.show") }}"><i
+                                class="anticon icon-book"></i> 人员管理</a>
+                    </li>
+                    {#                <li class="nav-item">#}
+                    {#                  <a class="nav-link" href="{{ url_for("digits.digits_search") }}"><i class="anticon icon-star"></i> 自定义模型识别</a>#}
+                    {#                </li>#}
+                    <li class="nav-item" id="image-pre-btn">
+                        <a class="nav-link"
+                           onclick="if(confirm('您确定要进行图片预处理？\n（处理时间与图片数量成正比）'))
                      {runPretreatment()}else{return false;}"
-                     style="cursor:pointer !important;"
-                  ><i class="anticon icon-clockcircle"></i> 预处理图片</a>
-                </li>
-              </ul>
-              <div class="form-inline navbar-search ml-auto">
+                           style="cursor:pointer !important;"
+                        ><i class="anticon icon-clockcircle"></i> 预处理图片</a>
+                    </li>
+                </ul>
+                <div class="form-inline navbar-search ml-auto">
 
-              </div>
-              <ul class="navbar-nav flex-row d-sm-flex ml-sm-3">
+                </div>
+                <ul class="navbar-nav flex-row d-sm-flex ml-sm-3">
 
-                <li class="nav-item">
-                    <div class="nav-link-color">欢迎您：{{ session.get('username') }}！</div>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('facecatch.logout') }}" rel="noopener" aria-label="注销" title="注销">
-                    <i class="anticon icon-poweroff"></i>
-                  </a>
-                </li>
-              </ul>
+                    <li class="nav-item">
+                        <div class="nav-link-color">欢迎您：{{ session.get('username') }}！</div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('facecatch.logout') }}" rel="noopener" aria-label="注销"
+                           title="注销">
+                            <i class="anticon icon-poweroff"></i>
+                        </a>
+                    </li>
+                </ul>
             </div>
-          </nav>
-        </header>
-
+        </nav>
+    </header>
 
 
     <div class="face-content">
-    {% block content %}
-    {% endblock %}
+        {% block content %}
+        {% endblock %}
     </div>
     <script>
         function runPretreatment() {
+            $('#image-pre-btn').addClass('disable-some');
             $.ajax({
                 type: 'get',
                 contentType: "application/json; charset=UTF-8",
@@ -98,6 +92,6 @@
             })
         }
     </script>
-    </layout>
+</layout>
 </body>
 </html>

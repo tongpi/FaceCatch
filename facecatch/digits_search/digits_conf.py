@@ -66,5 +66,3 @@ def get_first_model():
     req = requests.get(settings.DISCERN_MODEL_URL)
     models = json.loads(req.content)['models']
     return models[-1]['id']
-
-

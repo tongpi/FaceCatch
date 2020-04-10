@@ -1,5 +1,7 @@
 import base64
 import os
+import hashlib
+import time
 
 import settings
 from facecatch.database import db
@@ -7,6 +9,7 @@ from facecatch.database import db
 
 class PersonInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    # user_id = db.Column(db.String, nullable=False)
     name = db.Column(db.String(80))
     department = db.Column(db.String())
     id_card = db.Column(db.String(80))
@@ -30,12 +33,9 @@ class PersonInfo(db.Model):
         }
         return d
 
-    @staticmethod
-    def person_image_path(id_card):
-        return settings.PERSON_STORAGE_ADDRESS + '/{}.jpg'.format(id_card)
-
     def delete_person_jpg(self):
-        os.remove(self.person_image_path(self.id_card))
+        if self.image:
+            os.remove(self.image)
         return None
 
     def update_person_jpg(self, new_id):
@@ -48,11 +48,20 @@ class PersonInfo(db.Model):
         with open(self.image, 'rb') as f:
             return base64.b64encode(f.read()).decode()
 
+    def gen_image_card(self, image):
+        m = hashlib.md5()
+        m.update(str(time.time()).encode('utf_8'))
+        card = m.hexdigest()
+        path = self.write_image(image, card)
+        return path
+
     @staticmethod
     def write_image(image, id_card):
+        if not os.path.exists(settings.PERSON_STORAGE_ADDRESS):
+            os.mkdir(settings.PERSON_STORAGE_ADDRESS)
         with open(settings.PERSON_STORAGE_ADDRESS + '/{}.jpg'.format(id_card), 'wb') as f:
             f.write(image)
-        return None
+        return settings.PERSON_STORAGE_ADDRESS + '/{}.jpg'.format(id_card)
 
 
 class ImageInfo(db.Model):

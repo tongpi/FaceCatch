@@ -1,6 +1,5 @@
 import ssl
-
-from flask import Flask, request
+from flask import Flask
 from flask_cas import CAS
 from flask_restful import Api
 
@@ -8,7 +7,6 @@ from facecatch.database import db
 import settings
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from facecatch.log import logger
 from facecatch.utils import pretreatment_image
 from facecatch.search.views import ImageListResource, ImageResource
 
@@ -33,6 +31,9 @@ api = Api(webapp)
 api.add_resource(ImageListResource, '/api/images_list')
 api.add_resource(ImageResource, '/api/image/<unknown_id>')
 
+# webapp.config['SECRET_KEY'] = binascii.hexlify(os.urandom(12)).decode()
+# socketio = SocketIO(webapp, async_mode='gevent')
+
 
 scheduler = BackgroundScheduler()
 if settings.PRETREATMENT_IMAGE_PATH:
@@ -44,7 +45,6 @@ if settings.PRETREATMENT_IMAGE_PATH:
 @webapp.before_first_request
 def create_db():
     db.create_all()
-    logger.info("IP为{} 进行访问。".format(request.remote_addr))
 
 
 from facecatch import views
@@ -59,6 +59,24 @@ from facecatch.expression import views
 webapp.register_blueprint(views.blueprint)
 from facecatch.digits_search import views
 webapp.register_blueprint(views.blueprint)
+
+
+# def guest_decorator(f):
+#     from functools import wraps
+#     @wraps(f)
+#     def home_decorated(*args, **kwargs):
+#         this_username = cas.username
+#         if this_username is None:
+#             return redirect(url_for('search.home'))
+#         return f(*args, **kwargs)
+#
+#     return home_decorated
+#
+#
+# # for endpoint in endpoints:
+# for endpoint, function in webapp.view_functions.items():
+#     if endpoint not in ['search.home', 'cas.login', 'static', 'cas.logout']:
+#         webapp.view_functions[endpoint] = guest_decorator(function)
 
 
 if __name__ == '__main__':

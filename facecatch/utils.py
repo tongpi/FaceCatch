@@ -52,11 +52,10 @@ def get_image_face(image_file, base=None):
         req = requests.post(url, json=data)
     except requests.exceptions.ConnectionError as e:
         logger.error("人脸识别服务连接失败，请检服务的运行状态以及地址的配置！")
-        raise e
+        return "人脸识别服务连接失败，请检服务的运行状态以及地址的配置！"
     try:
         face_list = json.loads(req.content.decode('utf-8'))['data']
     except Exception as e:
-        logger.error("未能获得人脸特征！错误：{}".format(e))
         face_list = []
     return face_list
 
@@ -69,7 +68,7 @@ def get_same_person(face_id, model=None):
         person_list = UnknownPersonInfo.query.filter().all()
     else:
         # 获取人脸库中的所有人的信息
-        person_list = PersonInfo.query.filter().all()
+        person_list = PersonInfo.query.filter(PersonInfo.image != '').all()
     # 用于保存对比人脸的结果key:欧式距离 value: 人信息的对象
     person_dict = {}
     if not person_list:

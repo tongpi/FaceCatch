@@ -8,8 +8,20 @@ services:
     ports:
       - "5007:5000"
     environment:
+      # 预处理图片文件夹
       PRETREATMENT_IMAGE_PATH: "/home/data/pretreatment"
+      # 预处理定时任务时间设置
+      PRETREATMENT_TIME: "22:00"
+      # 人员信息存储文件夹
+      PERSON_STORAGE_ADDRESS: "/home/data/person_images"
+      # 人脸识别服务地址
       FACENET_ADDRESS: "192.168.15.100:50555"
+      # 服务PG数据库地址
       FACECATCH_DATABASE_URL: "postgresql://postgres@192.168.15.100/face_0807"
+      # DIGITS服务地址
       DISCERN_ADDRESS: "192.168.15.100:5018"
+      # 系统日志存放目录
+      LOG_FILE_DIR: '/home/data'
+      # 系统日志文件名
+      LOG_FILE_NAME: 'face.log'
     restart: always

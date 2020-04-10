@@ -30,7 +30,7 @@
                 <label for="inputPassword" class="col-sm-3 col-form-label text-right">{{ form.file.label }}：</label>
                 <div class="col-sm-6">
                   {{ form.file(class='custom-file-input') }}
-                    <label class="custom-file-label ml-2 mr-2" for="customFile">选择文件</label>
+                    <label id="add-image-label" class="custom-file-label ml-2 mr-2" for="customFile">选择文件</label>
                 </div>
               </div>
               <div class="form-group row mb-4">
@@ -73,9 +73,12 @@
 
     <script>
         $(function(){
-            $("#file").change(function(){
-                image = $(this);
+            $("#file").change(function(e){
 
+                let fileMsg = e.currentTarget.files;
+                $('#add-image-label')[0].innerHTML = fileMsg[0].name;
+
+                image = $(this);
                 imgsrc= image[0].files[0];
                 var data=new FormData();
                 data.append('image_file',imgsrc);
@@ -91,8 +94,8 @@
                         if(data != 'success'){
                             image.val("") ;
                             $(".img").remove();
-                            alert("照片不符合要求请重新选择上传。");
-
+                            alert("照片未包含人脸，请重新选择上传。");
+                            window.location.reload();
                         }else{
                            $(".img").remove();
                            $("#image").append('<img src="" class="img" style="margin-left: 90px" width="150px" height="150px">');

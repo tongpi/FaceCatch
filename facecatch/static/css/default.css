@@ -70,3 +70,8 @@ body{
     padding: 0.5rem 1rem;
     color: rgba(255, 255, 255, 0.75);
 }
+
+.disable-some{
+  opacity:0.5;
+  pointer-events:none;
+}

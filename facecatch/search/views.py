@@ -1,12 +1,10 @@
 import base64
 from threading import Thread
-
 import flask
 
-from flask import request, render_template, session, jsonify, current_app, redirect, flash
+from flask import request, render_template, session, jsonify, current_app, redirect
 from flask_cas import login_required
 from flask_restful import Resource
-
 from flask_cas import CAS
 
 from facecatch.database import db
@@ -33,6 +31,7 @@ def home():
 @blueprint.route('/search', methods=['POST'])
 @login_required
 def search():
+    session['username'] = cas.username
     upload_form = UploadForm()
     upload_file = request.files['file'].read()
     face_list = get_image_face(upload_file)
